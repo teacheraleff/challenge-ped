@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Training Challenge - SLAP</title>
+    <!-- FAVICON ATUALIZADO -->
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqfi22uz0/image/upload/v1751163691/SLAP_TIPO_PRETO_1_xarnpe.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts (DM Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            text-align: left;
+            background-color: #f5f5f4; /* stone-100 */
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .quiz-option:hover:not(:disabled) {
+            background-color: #e7e5e4; /* stone-200 */
+            border-color: #F1D24B;
+        }
+        .quiz-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .quiz-option.correct {
+            background-color: #D1FAE5; /* green-200 */
+            border-color: #34D399; /* green-400 */
+            color: #065F46; /* green-800 */
+            font-weight: 600;
+        }
+        .quiz-option.incorrect {
+            background-color: #FEE2E2; /* red-200 */
+            border-color: #F87171; /* red-400 */
+            color: #991B1B; /* red-800 */
+            font-weight: 600;
+        }
+        .audio-player-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 450px;
+            background-color: #f5f5f4;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+        }
+        .play-pause-button {
+            background-color: #F1D24B;
+            color: #44403c;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+        }
+        .play-pause-button:hover { background-color: #eab308; }
+        .play-pause-button svg { width: 20px; height: 20px; }
+        .progress-bar { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: #e7e5e4; border-radius: 3px; outline: none; cursor: pointer; }
+        .progress-bar::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: #44403c; border-radius: 50%; cursor: pointer; }
+        .progress-bar::-moz-range-thumb { width: 16px; height: 16px; background: #44403c; border-radius: 50%; cursor: pointer; }
+        .time-display { font-size: 0.875rem; color: #57534e; min-width: 80px; text-align: center; }
+        #certificate {
+            background: linear-gradient(45deg, #fffbeb, #f0f9ff);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <!-- CABEÇALHO ATUALIZADO -->
+    <header class="bg-[#F1D24B] mb-10 shadow-md">
+        <div class="container mx-auto p-4 sm:p-6">
+            <!-- Estrutura do Flexbox atualizada para centralizar o título -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <!-- Item 1: Logo -->
+                <div>
+                     <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1751163691/SLAP_TIPO_PRETO_1_xarnpe.png" alt="SLAP Logo" class="h-16 w-auto">
+                </div>
+                <!-- Item 2: Título e Subtítulo (Centralizados) -->
+                <div class="text-center">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-stone-800">Pedagogical Challenge</h1>
+                    <p class="text-md sm:text-lg text-stone-700 mt-1">A new topic every month to sharpen your skills.</p>
+                </div>
+                <!-- Item 3: Módulo do Mês -->
+                <div class="bg-white text-stone-800 px-4 py-2 rounded-lg shadow-inner text-center">
+                    <span class="font-bold text-xl">JULY'S MODULE</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        <!-- Módulo de Treinamento Principal -->
+        <main>
+            <section class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border-2 border-stone-200">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <!-- Coluna da Esquerda: Materiais -->
+                    <div class="space-y-8">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-3 flex items-center"><i data-lucide="youtube" class="w-6 h-6 mr-2 text-red-500"></i>Materiais em Vídeo</h4>
+                            <div class="mb-4">
+                                <p class="font-medium text-stone-700 mb-2">Vídeo 1: Entendendo a ZDP</p>
+                                <div class="aspect-video bg-stone-200 rounded-lg overflow-hidden">
+                                    <video controls class="w-full h-full">
+                                        <source src="https://res.cloudinary.com/dqfi22uz0/video/upload/v1751160446/Vygotksy_s_Zone_of_Proximal_Development_Explained_in_4_minutes_n3dmpt.mp4" type="video/mp4">
+                                        Seu navegador não suporta a tag de vídeo.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xl font-semibold mb-3 flex items-center"><i data-lucide="headphones" class="w-6 h-6 mr-2 text-sky-500"></i>Materiais em Áudio</h4>
+                            <!-- Players de Áudio aqui -->
+                            <div class="mb-4">
+                                <p class="font-medium text-stone-700 mb-2">Áudio 1</p>
+                                <div class="audio-player-container">
+                                    <button class="play-pause-button">
+                                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                                        <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                                    </button>
+                                    <span class="time-display">0:00 / 0:00</span>
+                                    <input type="range" class="progress-bar" value="0" step="1">
+                                    <audio class="audio-element" preload="metadata" src="https://res.cloudinary.com/dqfi22uz0/video/upload/v1751161824/zdp1_yldo65.mp3"></audio>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <p class="font-medium text-stone-700 mb-2">Áudio 2</p>
+                                <div class="audio-player-container">
+                                    <button class="play-pause-button">
+                                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                                        <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                                    </button>
+                                    <span class="time-display">0:00 / 0:00</span>
+                                    <input type="range" class="progress-bar" value="0" step="1">
+                                    <audio class="audio-element" preload="metadata" src="https://res.cloudinary.com/dqfi22uz0/video/upload/v1751162058/ZDP2_jfyspg.mp3"></audio>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna da Direita: Quiz -->
+                    <div class="flex flex-col">
+                        <h4 class="text-xl font-semibold mb-3 flex items-center"><i data-lucide="swords" class="w-6 h-6 mr-2 text-violet-600"></i>O Desafio ZDP</h4>
+                        <div id="quiz-container" class="bg-stone-50 p-6 rounded-lg border border-stone-200 flex-grow min-h-[400px]">
+                            <!-- O conteúdo do quiz (tela inicial, perguntas, tela de sucesso) será injetado aqui -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- VARIÁVEIS GLOBAIS ---
+            let teacherName = '';
+            let quizQuestions = [];
+            let currentQuestionIndex = 0;
+            const questionsInChallenge = 25;
+            const quizContainer = document.getElementById('quiz-container');
+
+            // --- DADOS DO QUIZ ZDP (Exemplo, idealmente todas as 50) ---
+            const fullQuizData = [
+                { q: "A ZDP de Vygotsky é melhor descrita como...", o: ["Um nível fixo do aluno", "Um espaço físico para aprendizagem", "Um espaço metafórico de crescimento potencial", "Um conjunto de objetivos de aprendizagem"], a: 2, e: "A ZDP não é um lugar físico ou um nível fixo, mas um espaço conceitual onde o potencial de aprendizagem é ativado através de orientação." },
+                { q: "O termo 'proximal' em ZDP refere-se a...", o: ["A proximidade do aluno com o professor", "O que está perto de ser dominado pelo aprendiz", "O próximo tópico no currículo", "O objetivo final do curso"], a: 1, e: "'Proximal' significa 'próximo', indicando habilidades que o aprendiz está pronto para adquirir com ajuda." },
+                { q: "Qual conceito está intrinsecamente ligado à ZDP e atua como o mecanismo de aprendizagem dentro dela?", o: ["Memorização", "Scaffolding (Andaimamento)", "Estudo independente", "Avaliação somativa"], a: 1, e: "O scaffolding é o suporte estruturado fornecido por um 'Outro Mais Conhecedor' (MKO) que permite a um aprendiz navegar em sua ZDP." },
+                // ... (O resto das perguntas estaria aqui)
+            ];
+
+            // --- FUNÇÕES DO QUIZ ---
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function showNameInputScreen() {
+                quizContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-center">
+                        <i data-lucide="user-check" class="w-16 h-16 text-[#F1D24B] mb-4"></i>
+                        <h3 class="text-2xl font-bold text-stone-800 mb-2">Bem-vindo(a) ao Desafio!</h3>
+                        <p class="text-stone-600 mb-6">Por favor, insira seu nome para gerar o certificado.</p>
+                        <div class="w-full max-w-sm">
+                            <label for="teacherNameInput" class="sr-only">Seu Nome</label>
+                            <input type="text" id="teacherNameInput" placeholder="Digite seu nome aqui..." class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-[#F1D24B] focus:border-[#F1D24B] mb-2">
+                            <p id="nameError" class="text-red-600 text-sm hidden mb-4">O nome é obrigatório.</p>
+                            <button onclick="window.startQuiz()" class="w-full bg-[#F1D24B] text-stone-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors">
+                                Começar Desafio
+                            </button>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+
+            window.startQuiz = function() {
+                const nameInput = document.getElementById('teacherNameInput');
+                const nameError = document.getElementById('nameError');
+                
+                if (!nameInput.value.trim()) {
+                    nameError.classList.remove('hidden');
+                    return;
+                }
+                
+                nameError.classList.add('hidden');
+                teacherName = nameInput.value.trim();
+                
+                currentQuestionIndex = 0;
+                // Usando apenas um subconjunto para demonstração
+                const shuffled = shuffleArray([...fullQuizData, ...fullQuizData, ...fullQuizData, ...fullQuizData, ...fullQuizData]);
+                quizQuestions = shuffled.slice(0, questionsInChallenge); 
+                displayQuestion();
+            }
+
+            function displayQuestion() {
+                const questionData = quizQuestions[currentQuestionIndex];
+                const optionsHtml = questionData.o.map((option, index) =>
+                    `<button class="quiz-option" onclick="window.selectAnswer(${index})">${option}</button>`
+                ).join('');
+
+                quizContainer.innerHTML = `
+                    <div id="quiz-content" class="flex flex-col h-full">
+                        <div class="flex-grow">
+                            <p class="text-sm font-semibold text-stone-500 mb-4">Pergunta ${currentQuestionIndex + 1} de ${questionsInChallenge} (Sequência: ${currentQuestionIndex})</p>
+                            <h3 class="text-lg font-bold mb-4 text-stone-800">${questionData.q}</h3>
+                            <div id="quiz-options">${optionsHtml}</div>
+                        </div>
+                        <div id="feedback-area" class="mt-4"></div>
+                    </div>
+                `;
+            }
+
+            window.selectAnswer = function(selectedIndex) {
+                const questionData = quizQuestions[currentQuestionIndex];
+                const options = document.querySelectorAll('#quiz-options .quiz-option');
+                const feedbackArea = document.getElementById('feedback-area');
+
+                options.forEach(button => button.disabled = true);
+                const selectedButton = options[selectedIndex];
+
+                if (selectedIndex === questionData.a) {
+                    selectedButton.classList.add('correct');
+                    feedbackArea.innerHTML = `<div class="p-3 bg-green-50 text-green-700 border border-green-200 rounded-lg"><p><strong>Correto!</strong> Indo para a próxima pergunta...</p></div>`;
+                    
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        if (currentQuestionIndex >= questionsInChallenge) {
+                            showSuccessScreen();
+                        } else {
+                            displayQuestion();
+                        }
+                    }, 1500);
+
+                } else {
+                    selectedButton.classList.add('incorrect');
+                    options[questionData.a].classList.add('correct');
+                    feedbackArea.innerHTML = `
+                        <div class="p-3 bg-red-50 text-red-700 border border-red-200 rounded-lg">
+                            <p><strong>Incorreto.</strong> O desafio foi reiniciado. <br><strong>Explicação:</strong> ${questionData.e}</p>
+                            <button class="mt-3 font-bold py-2 px-4 rounded-lg bg-[#F1D24B] text-stone-800 w-full" onclick="window.init()">Tentar Novamente</button>
+                        </div>
+                    `;
+                }
+            }
+            
+            function showSuccessScreen() {
+                 const completionDate = new Date();
+                 const formattedDate = completionDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                 const formattedTime = completionDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                 const completionTimestamp = `${formattedDate} às ${formattedTime}`;
+
+                 quizContainer.innerHTML = `
+                    <div id="certificate" class="text-center flex flex-col items-center justify-center h-full p-6 rounded-lg border-2 border-yellow-400">
+                        <i data-lucide="award" class="w-20 h-20 text-yellow-500 mb-4"></i>
+                        <h3 class="text-3xl font-bold mb-2 text-stone-800">Desafio Concluído!</h3>
+                        <p class="text-lg text-stone-600 mb-4">Parabéns, você respondeu com sucesso a ${questionsInChallenge} perguntas seguidas.</p>
+                        
+                        <div class="bg-white p-6 rounded-lg border border-stone-200 w-full my-6 text-left shadow-inner">
+                            <p><strong>Professor(a):</strong> <span class="font-semibold">${teacherName}</span></p>
+                            <p><strong>Módulo:</strong> Zona de Desenvolvimento Proximal (ZDP)</p>
+                            <p><strong>Concluído em:</strong> ${completionTimestamp}</p>
+                            <p><strong>Status:</strong> <span class="font-bold text-green-600">Concluído</span></p>
+                        </div>
+
+                        <p class="font-semibold text-blue-800 bg-blue-100 p-3 rounded-md">Tire um print deste certificado e envie para a coordenação como prova de conclusão.</p>
+                        
+                        <button class="mt-6 font-bold py-3 px-6 rounded-lg bg-[#F1D24B] text-stone-800 hover:bg-yellow-500 transition-colors" onclick="window.init()">Jogar Novamente</button>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+
+            // --- LÓGICA DO PLAYER DE ÁUDIO ---
+            document.querySelectorAll('.audio-player-container').forEach(player => {
+                const audio = player.querySelector('.audio-element');
+                const playPauseBtn = player.querySelector('.play-pause-button');
+                const progressBar = player.querySelector('.progress-bar');
+                const timeDisplay = player.querySelector('.time-display');
+                
+                function formatTime(seconds) {
+                    const minutes = Math.floor(seconds / 60);
+                    const secs = Math.floor(seconds % 60);
+                    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+                }
+
+                audio.addEventListener('loadedmetadata', () => {
+                    if (audio.duration) {
+                        progressBar.max = Math.floor(audio.duration);
+                        timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
+                    }
+                });
+                
+                 audio.addEventListener('timeupdate', () => {
+                     if (audio.duration) {
+                        progressBar.value = Math.floor(audio.currentTime);
+                        timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+                     }
+                });
+
+                playPauseBtn.addEventListener('click', () => {
+                    if (audio.paused) {
+                        document.querySelectorAll('.audio-element').forEach(otherAudio => {
+                            if (otherAudio !== audio) {
+                                otherAudio.pause();
+                                const otherPlayer = otherAudio.closest('.audio-player-container');
+                                otherPlayer.querySelector('.play-icon').classList.remove('hidden');
+                                otherPlayer.querySelector('.pause-icon').classList.add('hidden');
+                            }
+                        });
+                        audio.play();
+                        playPauseBtn.querySelector('.play-icon').classList.add('hidden');
+                        playPauseBtn.querySelector('.pause-icon').classList.remove('hidden');
+                    } else {
+                        audio.pause();
+                        playPauseBtn.querySelector('.play-icon').classList.remove('hidden');
+                        playPauseBtn.querySelector('.pause-icon').classList.add('hidden');
+                    }
+                });
+
+                audio.addEventListener('ended', () => {
+                    playPauseBtn.querySelector('.play-icon').classList.remove('hidden');
+                    playPauseBtn.querySelector('.pause-icon').classList.add('hidden');
+                    progressBar.value = 0;
+                    audio.currentTime = 0;
+                });
+
+                progressBar.addEventListener('input', () => {
+                    audio.currentTime = progressBar.value;
+                });
+            });
+            
+
+            // --- INICIALIZAÇÃO ---
+            window.init = function() { // Tornando a função init global para ser chamada pelo botão
+                showNameInputScreen();
+                lucide.createIcons();
+            }
+
+            window.init();
+        });
+    </script>
+</body>
+</html>
