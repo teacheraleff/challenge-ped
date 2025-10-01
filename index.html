@@ -1,465 +1,1008 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ped Challenge | SLAP</title>
-    <!-- UPDATED FAVICON -->
+    <title>SLAP | Placement Test Guide</title>
+    <!-- Favicon da SLAP -->
     <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749543469/SLAP_FAVICON_AMARELO_coilvj.png">
-
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Google Fonts (DM Sans) -->
+    
+    <!-- Google Fonts: DM Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* Aplicando a fonte padrão e cores do Hub Pedagógico */
+        html, body {
+            height: 100%;
+        }
         body {
             font-family: 'DM Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
         }
-        .quiz-option {
-            display: block;
+        #app-container {
+            flex: 1 0 auto;
+        }
+        main {
+            flex-shrink: 0;
+        }
+        
+        /* Estilos específicos para Ecrãs de Apresentação Escuros */
+        .dark-splash {
+            background-color: #1c1917; /* stone-900 */
+            color: #f5f5f4; /* stone-100 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; 
+            text-align: center;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            max-width: 42rem;
+        }
+        
+        /* Estilos do Botão de Ação */
+        .action-button {
+             background-color: #F1D24B; 
+             color: #44403c; /* stone-800 */
+             border: none; 
+             padding: 0.75rem 1.5rem; 
+             border-radius: 9999px; 
+             font-weight: 700; 
+             cursor: pointer; 
+             transition: background-color 0.2s, transform 0.2s;
+             display: inline-flex;
+             align-items: center;
+             justify-content: center; /* Centraliza o conteúdo (texto/ícones) */
+             gap: 0.5rem;
+             text-decoration: none;
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .action-button:hover:not(:disabled) {
+            background-color: #eab308; /* Darker yellow */
+            transform: translateY(-2px);
+        }
+        .action-button:disabled {
+            background-color: #a8a29e; /* stone-400 */
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .progress-bar-background {
+            background-color: #e7e5e4; /* stone-200 */
+            border-radius: 9999px;
+            height: 1rem;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-bar-foreground {
+            background-color: #F1D24B;
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        /* Estilos para o campo de input */
+        .input-field {
             width: 100%;
             padding: 0.75rem 1rem;
-            margin-bottom: 0.75rem;
-            text-align: left;
             background-color: #f5f5f4; /* stone-100 */
+            border: 2px solid #e7e5e4; /* stone-200 */
             border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
+            font-size: 1rem;
+            color: #44403c;
+            transition: border-color 0.2s;
         }
-        .quiz-option:hover:not(:disabled) {
-            background-color: #e7e5e4; /* stone-200 */
+        .input-field:focus {
+            outline: none;
             border-color: #F1D24B;
         }
-        .quiz-option:disabled {
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-        .quiz-option.correct {
-            background-color: #D1FAE5; /* green-200 */
-            border-color: #34D399; /* green-400 */
-            color: #065F46; /* green-800 */
-            font-weight: 600;
-        }
-        .quiz-option.incorrect {
-            background-color: #FEE2E2; /* red-200 */
-            border-color: #F87171; /* red-400 */
-            color: #991B1B; /* red-800 */
-            font-weight: 600;
-        }
-        .audio-player-container {
+
+        /* Estilos para os botões de pontuação (Oral Assessment) */
+        .score-button {
+            padding: 0.5rem 0.75rem; 
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            border: 2px solid transparent;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 0.75rem;
-            width: 100%;
-            max-width: 450px;
-            background-color: #f5f5f4;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
+            justify-content: center;
+            min-width: 90px;
         }
-        .play-pause-button {
+        .score-button .score-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+
+        .score-button.selected {
             background-color: #F1D24B;
+            border-color: #EAB308;
+            color: #1c1917;
+        }
+        .score-button:hover:not(.selected) {
+            background-color: #fceb9e;
+        }
+        /* Mapeamento de cores para os 4 critérios */
+        .score-button.score-0 { background-color: #fca5a5; color: #991B1B; } /* Red for 0 (Didn't Answer) */
+        .score-button.score-1 { background-color: #FEE2E2; color: #991B1B; } /* Light Red for 1 (Weak Answer) */
+        .score-button.score-2 { background-color: #FFFBEB; color: #92400E; } /* Yellow for 2 (Acceptable Answer) */
+        .score-button.score-3 { background-color: #D1FAE5; color: #065F46; } /* Green for 3 (Strong Answer) */
+
+        /* Estilo para a caixa de critérios */
+        .criteria-box {
+            background-color: #f5f5f4; /* stone-100 */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e7e5e4;
+        }
+        /* NOVO ESTILO: Botão de Parar Teste usando base do action-button */
+        .stop-test-button {
+            background-color: #ef4444; /* red-500 */
+            color: white; 
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.4); 
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .stop-test-button:hover {
+            background-color: #dc2626; /* red-600 */
+            transform: translateY(-2px);
+        }
+        .stop-test-button:disabled {
+            background-color: #fca5a5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Estilos do Grammar Grid (NOVO LAYOUT DE CARTÕES/GRID) */
+        .grammar-grid-container {
+            display: grid;
+            gap: 1.5rem; /* Espaço entre os cartões */
+            /* Layout de 1 coluna por padrão (mobile) */
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 640px) { /* sm breakpoint (desktop/tablet) */
+            /* Layout de 2 colunas para telas maiores */
+            .grammar-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .grammar-card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Garante que os cartões na grelha tenham altura uniforme */
+        }
+        .grammar-topic-header {
+            background-color: #f5f5f4; /* stone-100 */
+            padding: 1rem;
+            border-bottom: 1px solid #e7e5e4;
+            font-weight: 700;
             color: #44403c;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+            flex-grow: 1; /* Permite que o cabeçalho se expanda se o texto for maior */
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+        }
+        .grammar-options-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem;
+        }
+        .grammar-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 0.25rem;
+            border-radius: 0.5rem; /* Menos arredondado para pills */
             cursor: pointer;
-            transition: background-color 0.2s;
-            flex-shrink: 0;
+            transition: background-color 0.2s, border-color 0.2s;
+            border: 2px solid transparent;
+            min-width: 30%; /* Ocupa 1/3 do espaço disponível no container flex */
+            font-size: 0.875rem;
+            font-weight: 500;
         }
-        .play-pause-button:hover { background-color: #eab308; }
-        .play-pause-button svg { width: 20px; height: 20px; }
-        .progress-bar { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: #e7e5e4; border-radius: 3px; outline: none; cursor: pointer; }
-        .progress-bar::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: #44403c; border-radius: 50%; cursor: pointer; }
-        .progress-bar::-moz-range-thumb { width: 16px; height: 16px; background: #44403c; border-radius: 50%; cursor: pointer; }
-        .time-display { font-size: 0.875rem; color: #57534e; min-width: 80px; text-align: center; }
-        #certificate {
-            background: linear-gradient(45deg, #fffbeb, #f0f9ff);
+
+        /* Cores das Pills */
+        .grammar-pill[data-score="1"] { background-color: #fee2e2; color: #991B1B; } /* Red (Weak) */
+        .grammar-pill[data-score="2"] { background-color: #fffbe9; color: #92400E; } /* Yellow (Medium) */
+        .grammar-pill[data-score="3"] { background-color: #d1fae5; color: #065F46; } /* Green (Strong) */
+
+        /* Seleção das Pills */
+        .grammar-pill.selected-1 { border-color: #ef4444; background-color: #fca5a5; }
+        .grammar-pill.selected-2 { border-color: #eab308; background-color: #fde68a; }
+        .grammar-pill.selected-3 { border-color: #10b981; background-color: #a7f3d0; }
+
+        .grammar-icon {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
         }
+
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body class="bg-stone-200 text-stone-800">
 
-    <!-- UPDATED HEADER -->
-    <header class="bg-[#F1D24B] mb-10 shadow-md">
-        <div class="container mx-auto p-4 sm:p-6">
-            <!-- Updated Flexbox structure -->
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <!-- Item 1: Logo -->
-                <div class="flex-shrink-0">
-                     <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1751163691/SLAP_TIPO_PRETO_1_xarnpe.png" alt="SLAP Logo" class="h-16 w-auto">
-                </div>
-                <!-- Item 2: Title & Subtitle (Centered) -->
-                <div class="text-center flex-grow">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-stone-800">Pedagogical Challenge</h1>
-                    <p class="text-md sm:text-lg text-stone-700 mt-1">A new topic every month to sharpen your skills.</p>
-                </div>
-                <!-- Item 3: Month's Module -->
-                <div class="bg-white text-stone-800 px-4 py-2 rounded-lg shadow-inner text-center flex-shrink-0">
-                    <span class="font-bold text-xl">JULY'S MODULE</span>
+    <main id="app-container" class="flex items-center justify-center p-4 sm:p-6 min-h-screen">
+        <div class="w-full max-w-3xl mx-auto">
+        
+            <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
+            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none">
+                <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749349751/DBB440C2-684E-4DCF-9CD3-B2DDC18F1E53_3_vgocga.jpg" alt="SLAP Logo" class="w-32 h-auto mx-auto mb-6 sm:mb-8 rounded-lg">
+                <h1 class="text-4xl sm:text-5xl font-bold text-[#F1D24B] mb-6 sm:mb-8">
+                    Placement Test Guide
+                </h1>
+                <p class="text-lg text-stone-400 mb-4">Acesso Exclusivo para Professores.</p>
+                
+                <div class="w-full max-w-sm">
+                    <input type="password" id="password-input" class="input-field mb-4" placeholder="Enter Secret Password" required>
+                    <!-- O botão já está com display: inline-flex e justify-content: center no CSS para centralizar -->
+                    <button class="action-button bg-[#F1D24B] text-stone-900 text-xl px-12 py-4 w-full" onclick="checkPassword()">
+                        Acessar Guia
+                    </button>
+                    <p id="password-error" class="text-red-400 mt-3 hidden">Incorrect password. Please try again.</p>
                 </div>
             </div>
-            <!-- REWORKED COUNTDOWN SECTION -->
-            <div id="countdown-container" class="mt-6 bg-stone-800 text-white p-6 rounded-lg shadow-lg">
-                <div class="flex flex-col md:flex-row items-center justify-center md:justify-around gap-6 md:gap-12">
-                    <!-- Countdown Block -->
-                    <div class="text-center">
-                        <h3 class="font-semibold text-base uppercase tracking-wider text-yellow-300">Deadline to Complete</h3>
-                        <div id="countdown" class="flex justify-center gap-4 sm:gap-6 text-2xl sm:text-4xl mt-2">
-                            <div><span id="days" class="font-bold">00</span><span class="block text-xs sm:text-sm font-normal text-stone-300">Days</span></div>
-                            <div><span id="hours" class="font-bold">00</span><span class="block text-xs sm:text-sm font-normal text-stone-300">Hours</span></div>
-                            <div><span id="minutes" class="font-bold">00</span><span class="block text-xs sm:text-sm font-normal text-stone-300">Minutes</span></div>
-                            <div><span id="seconds" class="font-bold">00</span><span class="block text-xs sm:text-sm font-normal text-stone-300">Seconds</span></div>
-                        </div>
+
+            <!-- SPLASH SCREEN 2: CONFIRMATION -->
+            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none">
+                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg">
+                    Teacher, o aluno está preparado para iniciar o teste?
+                </h2>
+                <button class="action-button bg-stone-100 text-stone-900 text-lg px-10 py-3" onclick="startQuiz()">
+                    Start Test!
+                </button>
+            </div>
+
+            <!-- Quiz View (NOVO LAYOUT DE AVALIAÇÃO ORAL) -->
+            <div id="quiz-view" class="hidden">
+                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full">
+                    <!-- Quiz content will be injected here by JS -->
+                 </div>
+            </div>
+            
+            <!-- GRAMMAR GRID VIEW (NOVO LAYOUT DE CARTÕES/GRID) -->
+            <div id="grammar-grid-view" class="hidden">
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
+                    <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
+                    
+                    <!-- NOVO CONTAINER COM GRID RESPONSIVO -->
+                    <div id="grammar-cards-container" class="grammar-grid-container">
+                        <!-- Grammar topics will be injected here by JS -->
                     </div>
-                    <!-- Vertical Separator -->
-                    <div class="hidden md:block w-px h-16 bg-stone-600"></div>
-                    <!-- Dojo Points Block -->
-                    <div class="text-center flex items-center gap-4">
-                        <i data-lucide="award" class="w-12 h-12 text-yellow-300 flex-shrink-0"></i>
-                        <div class="text-left">
-                             <p class="text-lg font-bold text-white">1000 Points</p>
-                             <p class="text-sm text-stone-300">in the SLAP Dojo</p>
-                        </div>
+                    
+                    <div id="grammar-grid-result" class="hidden my-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-[#F1D24B]">
+                        <p class="font-bold text-stone-800">Grammar Grid Result: <span id="grammar-level" class="text-xl font-extrabold text-[#1c1917]"></span></p>
+                        <p id="grammar-score" class="text-sm text-stone-600"></p>
                     </div>
+
+                    <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8 w-full">
+                        <button onclick="goToResultView()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2">Back to Test Result</button>
+                        <button id="submit-grammar-grid" onclick="submitGrammarGrid()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2" disabled>
+                            Submit & Calculate Grammar Level
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- RESULTADO FINAL -->
+            <div id="result-view" class="hidden">
+                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center">
+                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6">
+                    <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
+                    <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
+                    <p id="result-score" class="text-xl text-stone-600 mb-4 font-semibold"></p>
+                    
+                    <div class="my-6 p-6 bg-[#F1D24B] rounded-lg">
+                        <p class="text-2xl font-bold text-stone-900 mb-2">Estimated Level (Oral Test)</p>
+                        <p id="result-level" class="text-5xl font-extrabold text-stone-900 mb-2"></p>
+                    </div>
+                    
+                    <p id="result-message" class="text-stone-700 max-w-md mx-auto"></p>
+
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                         <button onclick="restartQuiz()" class="action-button text-lg px-8 py-3 bg-stone-800 text-white hover:bg-stone-900">
+                             Restart Test
+                         </button>
+                         <button onclick="goToGrammarGrid()" class="action-button text-lg px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700">
+                             Grammar Grid
+                         </button>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </header>
+    </main>
+    
+    <script>
+        // --- CONSTANTES AND DOM ELEMENTS ---
+        const CORRECT_PASSWORD = 'Slapkids1*';
+        const splash1View = document.getElementById('splash-1-view');
+        const splash2View = document.getElementById('splash-2-view');
+        const quizView = document.getElementById('quiz-view');
+        const resultView = document.getElementById('result-view');
+        const grammarGridView = document.getElementById('grammar-grid-view');
+        
+        let totalScore = 0;
+        let currentQuestionIndex = 0;
+        let studentScores = []; // Stores score for each question
+        let timerInterval = null; // For the timer
+        let startTime = 0; // Test start time
+        let totalTimeElapsed = 0; // Total time in milliseconds
+        
+        // Unique key for the overall score
+        const overallScoreKey = 'overallScore'; 
+        
+        // Stores grammar scores: { topicKey: scoreValue }
+        let grammarScores = {}; 
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-        <!-- Main Training Module -->
-        <main>
-            <section class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border-2 border-stone-200">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    <!-- Left Column: Materials -->
-                    <div class="space-y-8">
-                        <div>
-                            <h4 class="text-xl font-semibold mb-3 flex items-center"><i data-lucide="youtube" class="w-6 h-6 mr-2 text-red-500"></i>Video Materials</h4>
-                            <div class="mb-4">
-                                <p class="font-medium text-stone-700 mb-2">Video 1: Understanding ZPD</p>
-                                <div class="aspect-video bg-stone-200 rounded-lg overflow-hidden">
-                                    <video controls class="w-full h-full">
-                                        <source src="https://res.cloudinary.com/dqfi22uz0/video/upload/v1751160446/Vygotksy_s_Zone_of_Proximal_Development_Explained_in_4_minutes_n3dmpt.mp4" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                            </div>
-                        </div>
+        // --- QUIZ DATA (ORAL PROMPTS AND CRITERIA) ---
+        
+        const scoreValues = [
+            { 
+                value: 0, 
+                label: 'Didn\'t Answer', 
+                icon: '<svg class="score-icon text-red-700" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6" /></svg>', 
+                desc: '0 pt - O aluno não respondeu ou não conseguiu articular a resposta.' 
+            }, 
+            { 
+                value: 1, 
+                label: 'Weak Answer', 
+                icon: '<svg class="score-icon text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 18.0001L2.99974 5.0001H20.9997L11.9997 18.0001Z" transform="rotate(180 11.9997 11.5001)"/></svg>',
+                desc: '1 pt - Resposta fraca, uso incorreto ou falta de vocabulário básico.' 
+            },    
+            { 
+                value: 2, 
+                label: 'Acceptable Answer', 
+                icon: '<svg class="score-icon text-yellow-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>',
+                desc: '2 pts - Resposta aceitável, com erros mas a ideia é transmitida.' 
+            },
+            { 
+                value: 3, 
+                label: 'Strong Answer', 
+                icon: '<svg class="score-icon text-green-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"/></svg>',
+                desc: '3 pts - Resposta forte, boa fluência e precisão gramatical.'
+            }  
+        ];
+        
+        // Max score per question is 3. Total 40 questions * 3 = 120 max points.
+        
+        const oralPrompts = [
+            // Starter 1 (Pré-A1) - 5 Questões
+            { level: 'Starter 1 (Pré-A1)', prompt: "What’s your name?" },
+            { level: 'Starter 1 (Pré-A1)', prompt: "How old are you?" },
+            { level: 'Starter 1 (Pré-A1)', prompt: "Where are you from?" },
+            { level: 'Starter 1 (Pré-A1)', prompt: "Where do you live?" },
+            { level: 'Starter 1 (Pré-A1)', prompt: "What do you like to do in your free time?" },
+            
+            // Starter 2 (A1) - 4 Questões
+            { level: 'Starter 2 (A1)', prompt: "What do you usually do on weekends?" },
+            { level: 'Starter 2 (A1)', prompt: "Can you describe your house?" },
+            { level: 'Starter 2 (A1)', prompt: "Do you like living in your neighborhood? Why?" },
+            { level: 'Starter 2 (A1)', prompt: "Let’s talk about plans! What will you do tomorrow?" },
 
-                        <div>
-                            <h4 class="text-xl font-semibold mb-3 flex items-center"><i data-lucide="headphones" class="w-6 h-6 mr-2 text-sky-500"></i>Audio Materials</h4>
-                            <!-- Audio Players here -->
-                            <div class="mb-4">
-                                <p class="font-medium text-stone-700 mb-2">Audio 1</p>
-                                <div class="audio-player-container">
-                                    <button class="play-pause-button">
-                                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-                                        <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
-                                    </button>
-                                    <span class="time-display">0:00 / 0:00</span>
-                                    <input type="range" class="progress-bar" value="0" step="1">
-                                    <audio class="audio-element" preload="metadata" src="https://res.cloudinary.com/dqfi22uz0/video/upload/v1751161824/zdp1_yldo65.mp3"></audio>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <p class="font-medium text-stone-700 mb-2">Audio 2</p>
-                                <div class="audio-player-container">
-                                    <button class="play-pause-button">
-                                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-                                        <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
-                                    </button>
-                                    <span class="time-display">0:00 / 0:00</span>
-                                    <input type="range" class="progress-bar" value="0" step="1">
-                                    <audio class="audio-element" preload="metadata" src="https://res.cloudinary.com/dqfi22uz0/video/upload/v1751162058/ZDP2_jfyspg.mp3"></audio>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            // Freshman 1 (A2) - 5 Questões
+            { level: 'Freshman 1 (A2)', prompt: "What did you do yesterday?" },
+            { level: 'Freshman 1 (A2)', prompt: "Talking about yesterday, I felt a huge headache when I was working. When you have a headache, what do you do?" },
+            { level: 'Freshman 1 (A2)', prompt: "What’s your favorite part of your body? Why?" },
+            { level: 'Freshman 1 (A2)', prompt: "Tell me about the last time you went to the supermarket. What did you buy?" },
+            { level: 'Freshman 1 (A2)', prompt: "What should you lose your passport during an international trip?" },
 
-                    <!-- Right Column: Quiz -->
-                    <div class="flex flex-col">
-                        <h4 class="text-xl font-semibold mb-3 flex items-center"><i data-lucide="swords" class="w-6 h-6 mr-2 text-violet-600"></i>The ZPD Challenge</h4>
-                        <div id="quiz-container" class="bg-stone-50 p-6 rounded-lg border border-stone-200 flex-grow min-h-[400px]">
-                            <!-- Quiz content (welcome screen, questions, success screen) will be injected here -->
-                        </div>
+            // Freshman 2 (A2+) - 5 Questões
+            { level: 'Freshman 2 (A2+)', prompt: "When you were a child, what games did you play?" },
+            { level: 'Freshman 2 (A2+)', prompt: "What could you do when you were ten years old?" },
+            { level: 'Freshman 2 (A2+)', prompt: "How is Brazilian food different from American food?" },
+            { level: 'Freshman 2 (A2+)', prompt: "What do you like about your school or college life?" },
+            { level: 'Freshman 2 (A2+)', prompt: "What movie did you watch last week? What happened in it?" },
+
+            // Sophomore 1 (B1) - 5 Questões
+            { level: 'Sophomore 1 (B1)', prompt: "What is on your bucket list for the future?" },
+            { level: 'Sophomore 1 (B1)', prompt: "Have you ever been to an airport? What happened there?" },
+            { level: 'Sophomore 1 (B1)', prompt: "Do you prefer staying in a hotel or a hostel? Why?" },
+            { level: 'Sophomore 1 (B1)', prompt: "What’s the weather like today?" },
+            { level: 'Sophomore 1 (B1)', prompt: "If your friend spends too much money, what do you tell them?" },
+
+            // Sophomore 2 (B1+) - 5 Questões
+            { level: 'Sophomore 2 (B1+)', prompt: "Have you ever dreamed of travelling in time? Where would you go?" },
+            { level: 'Sophomore 2 (B1+)', prompt: "What have you just done today before coming here?" },
+            { level: 'Sophomore 2 (B1+)', prompt: "Have you been to the gym yet this week?" },
+            { level: 'Sophomores 2 (B1+)', prompt: "What’s something unfair you see in your city?" },
+            { level: 'Sophomore 2 (B1+)', prompt: "Can you tell me an English expression you like and what it means?" },
+
+            // Junior 1 (B1+/B2 low) - 5 Questões
+            { level: 'Junior 1 (B1+/B2 low)', prompt: "Who’s your hero? Why do you admire this person?" },
+            { level: 'Junior 1 (B1+/B2 low)', prompt: "If you see an injured animal, what will you do?" },
+            { level: 'Junior 1 (B1+/B2 low)', prompt: "Have you ever studied abroad or thought about it?" },
+            { level: 'Junior 1 (B1+/B2 low)', prompt: "What do you do once in a blue moon?" },
+            { level: 'Junior 1 (B1+/B2 low)', prompt: "If you won the lottery, what would you do?" },
+
+            // Junior 2 (B2 low) - 5 Questões
+            { level: 'Junior 2 (B2 low)', prompt: "Have you ever heard about a crime in the news? What happened?" },
+            { level: 'Junior 2 (B2 low)', prompt: "When a friend is sad, what do you say to help?" },
+            { level: 'Junior 2 (B2 low)', prompt: "Can you tell me about a cultural difference you’ve seen or heard of?" },
+            { level: 'Junior 2 (B2 low)', prompt: "Where do you usually put your phone when you’re at home?" },
+            { level: 'Junior 2 (B2 low)', prompt: "What’s something that’s right for you but wrong for others?" },
+            
+            // Senior 1 (B2) - 5 Questões
+            { level: 'Senior 1 (B2)', prompt: "Have you ever seen a video go viral? What was it?" },
+            { level: 'Senior 1 (B2)', prompt: "Who usually cooks at your home? Can you tell me how a favourite dish is made?" },
+            { level: 'Senior 1 (B2)', prompt: "What clothing expression do you know? Can you use it in a story?" },
+            { level: 'Senior 1 (B2)', prompt: "Tell me about something you regret from last year." },
+            { level: 'Senior 1 (B2)', prompt: "Tell me something one of your parents said that you remember until this day." },
+
+            // Senior 2 (B2 High) - 5 Questões
+            { level: 'Senior 2 (B2 High)', prompt: "If you had studied more, how would your life be now?" },
+            { level: 'Senior 2 (B2 High)', prompt: "Would you rather live in a big city or in the countryside? Why?" },
+            { level: 'Senior 2 (B2 High)', prompt: "Has anything ever happened to you that you still think about today?" },
+            { level: 'Senior 2 (B2 High)', prompt: "What happened when someone in your family passed away? (checking euphemism understanding)" },
+            { level: 'Senior 2 (B2 High)', prompt: "What’s something your parents used to bring you when you were a child?" },
+            
+            // ACC (Advanced Conversation Class) - 1 Questão (OBS: para o ACC, o sistema de pontuação considerará as perguntas anteriores)
+            { level: 'ACC', prompt: "Caso o prospect consiga responder todas as perguntas bem, ele está indicado para o nível ACC. (Este prompt serve apenas como lembrete final.)" }
+        ];
+
+        // Gramáticas baseadas na progressão do usuário (10 TÓPICOS)
+        const grammarTopics = [
+            // Starter 1
+            { topic: "Verb To Be", minLevel: 'Starter 1 (Pré-A1)' },
+            { topic: "Simple Present / Future Tenses (Will, Going To)", minLevel: 'Starter 2 (A1)' },
+            { topic: "Present Continuous", minLevel: 'Starter 2 (A1)' }, 
+            // Freshman 2
+            { topic: "Simple Past / Past Continuous", minLevel: 'Freshman 2 (A2+)' },
+            { topic: "Superlatives & Comparatives", minLevel: 'Freshman 2 (A2+)' },
+            // Sophomore 2
+            { topic: "Present Perfect", minLevel: 'Sophomore 2 (B1+)' },
+            { topic: "Conditionals (Zero, First, Second)", minLevel: 'Junior 1 (B1+/B2 low)' },
+            // Junior 2
+            { topic: "Would / Past Perfect", minLevel: 'Junior 2 (B2 low)' },
+            // Senior
+            { topic: "Modal Verbs (Complex) / Reported Speech", minLevel: 'Senior 1 (B2)' },
+            { topic: "Mixed Conditionals / Euphemisms", minLevel: 'Senior 2 (B2 High)' },
+        ];
+        
+        // Ícones para o Grammar Grid (Weak, Medium, Strong)
+        const grammarIcons = {
+            1: '<svg class="grammar-icon text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 18.0001L2.99974 5.0001H20.9997L11.9997 18.0001Z" transform="rotate(180 11.9997 11.5001)"/></svg>', // Down Arrow
+            2: '<svg class="grammar-icon text-yellow-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>', // Circle
+            3: '<svg class="grammar-icon text-green-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"/></svg>' // Star
+        };
+
+
+        // --- TIMER FUNCTIONS ---
+        
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = Date.now();
+            totalTimeElapsed = 0; // Reset total time
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                totalTimeElapsed = Date.now() - startTime; 
+            }
+        }
+
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            
+            const pad = (num) => num.toString().padStart(2, '0');
+            return `${pad(minutes)}:${pad(remainingSeconds)}`;
+        }
+
+        function updateTimerDisplay() {
+            const msElapsed = Date.now() - startTime;
+            const timerElement = document.getElementById('timer-display');
+            if (timerElement) {
+                timerElement.textContent = formatTime(msElapsed);
+            }
+        }
+
+        // --- NAVIGATION AND AUTHENTICATION FUNCTIONS ---
+
+        function hideAllViews() {
+            splash1View.classList.add('hidden');
+            splash2View.classList.add('hidden');
+            quizView.classList.add('hidden');
+            resultView.classList.add('hidden');
+            grammarGridView.classList.add('hidden');
+        }
+
+        function startSplash1() {
+            hideAllViews();
+            splash1View.classList.remove('hidden');
+        }
+        
+        window.checkPassword = function() {
+            const input = document.getElementById('password-input');
+            const errorMsg = document.getElementById('password-error');
+
+            if (input.value === CORRECT_PASSWORD) {
+                errorMsg.classList.add('hidden');
+                goToSplash2();
+            } else {
+                errorMsg.classList.remove('hidden');
+                input.value = ''; // Clear field
+                input.focus();
+            }
+        }
+
+        window.goToSplash2 = function() {
+            hideAllViews();
+            splash2View.classList.remove('hidden');
+        }
+        
+        window.goToResultView = function() {
+            hideAllViews();
+            resultView.classList.remove('hidden');
+        }
+
+        window.goToGrammarGrid = function() {
+            hideAllViews();
+            grammarGridView.classList.remove('hidden');
+            renderGrammarGrid();
+        }
+        
+        // --- QUIZ FUNCTIONS ---
+
+        function startQuiz() {
+            hideAllViews();
+            quizView.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            totalScore = 0;
+            // Clear and initialize score data
+            studentScores = oralPrompts.map(q => ({
+                ...q,
+                scores: { [overallScoreKey]: null }
+            }));
+            
+            // Reset Grammar Scores
+            grammarScores = {}; 
+            grammarTopics.forEach(topic => {
+                grammarScores[topic.topic] = 0; // Default to 0 until scored (Weak is 1)
+            });
+
+
+            startTimer(); // Start the timer
+
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const quizContainer = quizView.querySelector('.bg-white');
+            if (currentQuestionIndex >= studentScores.length) {
+                // If the end of the quiz is reached (passed the last ACC prompt), show the result
+                showResult();
+                return;
+            }
+
+            const questionData = studentScores[currentQuestionIndex];
+            const totalQuestions = studentScores.length;
+            const progressPercentage = ((currentQuestionIndex) / totalQuestions) * 100;
+            
+            const quizLogoUrl = "https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png"; 
+            
+            const currentScore = questionData.scores[overallScoreKey];
+            
+            // Render score buttons with SVGs
+            const scoreButtons = scoreValues.map(score => {
+                const isSelected = currentScore === score.value;
+                const buttonClasses = `score-button score-${score.value} ${isSelected ? 'selected' : ''}`; 
+                return `<button class="${buttonClasses}" onclick="setOverallScore(${score.value}, this)">
+                            ${score.icon}
+                            <span class="text-xs font-medium">${score.label}</span>
+                        </button>`;
+            }).join('');
+
+            const criteriaHtml = `
+                <div class="mb-4">
+                    <p class="font-bold text-stone-700 mb-2">Overall Answer Score</p>
+                    <div id="overall-criteria" class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                        ${scoreButtons}
                     </div>
                 </div>
-            </section>
-        </main>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- GLOBAL VARIABLES ---
-            let teacherName = '';
-            let quizQuestions = [];
-            let currentQuestionIndex = 0;
-            const questionsInChallenge = 25;
-            const quizContainer = document.getElementById('quiz-container');
-
-            // --- EXPANDED ZPD QUIZ DATA (50 QUESTIONS) ---
-            const fullQuizData = [
-                // Original 5
-                { q: "Vygotsky's ZPD is best described as a...", o: ["A fixed student level", "A physical space for learning", "A metaphorical space of potential growth", "A set of learning objectives"], a: 2, e: "ZPD is not a physical place or a fixed level, but a conceptual space where learning potential is activated through guidance." },
-                { q: "The 'proximal' in ZPD refers to...", o: ["The proximity of the student to the teacher", "What is close to being mastered by the learner", "The next topic in the syllabus", "The end goal of the course"], a: 1, e: "'Proximal' means 'nearby' or 'next', indicating skills the learner is ready to acquire with help." },
-                { q: "Which concept is intrinsically linked to ZPD and acts as the mechanism for learning within it?", o: ["Rote memorization", "Scaffolding", "Independent study", "Summative assessment"], a: 1, e: "Scaffolding is the structured support provided by an MKO (More Knowledgeable Other) that enables a learner to navigate their ZPD." },
-                { q: "Who can be considered a 'More Knowledgeable Other' (MKO)?", o: ["Only the certified teacher", "Only a native speaker", "Anyone with more expertise, including peers or technology", "Only a parent or guardian"], a: 2, e: "An MKO is anyone or anything that has a better understanding or a higher ability level, including teachers, advanced peers, or even a well-designed app." },
-                { q: "What is the primary goal of instruction within the ZPD?", o: ["To make tasks easier for the student", "To internalize skills, making the student independent", "To ensure the student never makes a mistake", "To accelerate through the curriculum"], a: 1, e: "The ultimate goal is for the learner to internalize the guided process, turning what was once achievable with help into an independent skill." },
-                
-                // New 45 Questions
-                { q: "What typically happens when a learning task is far *below* a student's ZPD?", o: ["Anxiety and frustration", "Optimal learning", "Boredom and disengagement", "Internalization of skills"], a: 2, e: "Tasks that are too easy and already mastered lead to boredom, as they don't provide a challenge." },
-                { q: "What typically happens when a learning task is far *above* a student's ZPD?", o: ["Rapid skill acquisition", "Frustration and anxiety", "Increased student confidence", "Effective peer collaboration"], a: 1, e: "Tasks that are too difficult, even with help, cause frustration and can hinder the learning process." },
-                { q: "Vygotsky's theory is a form of...", o: ["Behaviorism", "Cognitivism", "Social constructivism", "Humanism"], a: 2, e: "Social constructivism posits that knowledge is constructed through social interaction." },
-                { q: "The ZPD is best understood as a concept that is...", o: ["Static and measurable", "Fixed for each age group", "Dynamic and constantly changing", "Irrelevant to adult learners"], a: 2, e: "As a learner acquires new skills, their ZPD shifts. It is a dynamic, not static, concept." },
-                { q: "The lower limit of the ZPD represents...", o: ["What a learner can do with assistance", "The learner's potential development", "What a learner can do independently", "The instructional goal"], a: 2, e: "The lower limit is defined by the skills that the student has already mastered and can perform without any help." },
-                { q: "The upper limit of the ZPD represents...", o: ["Tasks that are impossible for the learner", "What the learner can achieve with guidance", "Skills the learner has already mastered", "The starting point of instruction"], a: 1, e: "The upper limit is the most a learner can achieve at that moment, but only with the help of an MKO." },
-                { q: "The ZPD bridges the gap between...", o: ["Social speech and private speech", "Actual development and potential development", "Teacher and student", "Theory and practice"], a: 1, e: "It represents the space between what is known (actual development) and what could be known with help (potential development)." },
-                { q: "Applying ZPD in the classroom requires teachers to first...", o: ["Group students by age", "Deliver a standardized lecture", "Accurately assess students' current abilities", "Provide the final answers"], a: 2, e: "To identify a student's ZPD, a teacher must first understand what the student can already do on their own." },
-                { q: "The concept of ZPD challenges the sole reliance on...", o: ["Formative assessment", "Collaborative projects", "Standardized, independent testing", "Peer tutoring"], a: 2, e: "Standardized tests only measure what a student can do alone, ignoring their potential for growth with assistance." },
-                { q: "Scaffolding, as a teaching strategy, should be...", o: ["Permanent and consistent", "The same for all students", "Temporary and gradually removed", "Used only for difficult subjects"], a: 2, e: "The goal of scaffolding is to provide support only when needed and then fade it away as the learner becomes more competent." },
-                { q: "Which of the following is a classic example of scaffolding?", o: ["Letting the student struggle alone", "Giving the student the correct answer immediately", "Breaking a complex task into smaller, manageable steps", "Assigning extra homework"], a: 2, e: "Breaking down a task is a key scaffolding technique to make complex skills more accessible." },
-                { q: "The term 'scaffolding' was coined by...", o: ["Lev Vygotsky", "Jean Piaget", "Jerome Bruner", "B.F. Skinner"], a: 2, e: "While inspired by Vygotsky's ZPD, the term 'scaffolding' was actually introduced by Jerome Bruner." },
-                { q: "What is the process of gradually removing scaffolding called?", o: ["Fading", "Zoning", "Modeling", "Receding"], a: 0, e: "Fading is the term used for the gradual withdrawal of support as the learner's proficiency increases." },
-                { q: "A teacher demonstrating how to solve a math problem before students try it is an example of...", o: ["Summative assessment", "Modeling, a scaffolding technique", "Independent learning", "Trial and error"], a: 1, e: "Modeling is a form of scaffolding where the expert demonstrates the process for the learner." },
-                { q: "Can a well-designed software application function as a More Knowledgeable Other (MKO)?", o: ["No, an MKO must be a human", "Yes, if it provides guidance and feedback", "Only if it has artificial intelligence", "Only for teaching basic facts"], a: 1, e: "An MKO can be anything or anyone with more knowledge on the task, including technology like apps or computer programs." },
-                { q: "In a collaborative learning group, a more advanced peer can act as an...", o: ["Obstacle", "MKO (More Knowledgeable Other)", "Formal assessor", "Distraction"], a: 1, e: "Peer-to-peer learning is a powerful application of Vygotsky's theory, where students serve as MKOs for each other." },
-                { q: "According to Vygotsky, what is the most important 'psychological tool' for cognitive development?", o: ["Memory", "Language", "Logic", "Attention"], a: 1, e: "Vygotsky viewed language as the primary tool that shapes thought and enables higher-order cognitive functions." },
-                { q: "Vygotsky saw a child's 'private speech' (talking to oneself) as...", o: ["A sign of immaturity", "A tool for problem-solving and self-regulation", "A meaningless activity", "A symptom of social isolation"], a: 1, e: "Unlike Piaget, Vygotsky believed private speech is a crucial step in internalizing thought and directing one's own actions." },
-                { q: "How did Vygotsky's view of private speech differ from Piaget's?", o: ["Vygotsky saw it as social, Piaget as egocentric", "Vygotsky saw it as useless, Piaget as vital", "They had the same view", "Piaget didn't study private speech"], a: 0, e: "Piaget viewed it as 'egocentric speech' that fades away, while Vygotsky saw it as a cognitive tool that becomes 'inner speech'." },
-                { q: "According to Vygotsky, thought and language...", o: ["Are identical from birth", "Develop independently at first and then merge", "Language is a byproduct of thought", "Thought is a byproduct of language"], a: 1, e: "He proposed that in early development, thought is non-verbal and speech is non-intellectual. They merge around age two." },
-                { q: "A Vygotskian-inspired classroom would most likely feature...", o: ["Silent, individual desk work", "Frequent competitive exams", "Extensive collaborative group work", "Teacher-centered lectures"], a: 2, e: "Because learning is seen as a social process, collaborative activities are a cornerstone of applying Vygotsky's ideas." },
-                { q: "How does ZPD differ from Piaget's concept of developmental stages?", o: ["ZPD is stage-based, Piaget's is continuous", "ZPD emphasizes social learning, Piaget's stages are more individual", "There is no major difference", "Piaget focused on adults, Vygotsky on children"], a: 1, e: "Piaget's theory proposes universal, discrete stages of cognitive development, while Vygotsky's ZPD focuses on the continuous learning potential through social interaction." },
-                { q: "In a Vygotskian sense, 'readiness' for learning means the student...", o: ["Has reached a certain age", "Has passed a prerequisite test", "Is within the ZPD for a particular skill", "Is motivated to learn"], a: 2, e: "Readiness isn't about age, but about whether a skill is in the 'proximal' zone—achievable with help." },
-                { q: "An assessment based on the ZPD would focus on...", o: ["Only what a student can do independently", "What a student can do with guidance", "Comparing a student to national norms", "The final product, not the process"], a: 1, e: "This is called dynamic assessment, and it aims to understand a learner's potential, not just their current independent performance." },
-                { q: "Why is 'play' considered important in Vygotsky's theory?", o: ["It's a break from real learning", "It helps children release energy", "It creates a ZPD where children can act above their current level", "It is only for developing motor skills"], a: 2, e: "Vygotsky saw play as a key learning activity where children can explore roles and ideas that are just beyond their current independent grasp." },
-                { q: "The process of a learner absorbing knowledge from their social context and making it their own is called...", o: ["Accommodation", "Assimilation", "Internalization", "Observation"], a: 2, e: "Internalization is the key process where social, external activities are transformed into internal, mental functions." },
-                { q: "Which instructional strategy, involving a dialogue between teachers and students about a text, is heavily based on ZPD?", o: ["Direct instruction", "Reciprocal teaching", "Rote memorization", "Pop quizzes"], a: 1, e: "Reciprocal teaching (summarizing, questioning, clarifying, predicting) is a classic example of scaffolding within a ZPD." },
-                { q: "Vygotsky's theory places a stronger emphasis on ______ than Piaget's theory.", o: ["Genetics", "Universal stages", "Culture and social context", "Individual exploration"], a: 2, e: "A central tenet of Vygotsky's work is that cognitive development is fundamentally shaped by a person's culture and social interactions." },
-                { q: "What is NOT a good scaffolding technique?", o: ["Providing hints or clues", "Offering a simplified model", "Giving the student the answer to avoid struggle", "Using graphic organizers"], a: 2, e: "Providing the answer directly prevents the student from engaging in the learning process, which is the purpose of scaffolding." },
-                { q: "Internalized language that we use for thinking is called...", o: ["Social speech", "Private speech", "Inner speech", "Formal speech"], a: 2, e: "Inner speech is the final stage, where self-talk becomes silent and integrated into thought." },
-                { q: "The 'apprenticeship' model of learning, where a novice learns from an expert, aligns well with...", o: ["Behaviorism", "Piaget's stages", "ZPD and scaffolding", "Discovery learning"], a: 2, e: "The master-apprentice relationship is a perfect real-world example of an MKO providing scaffolding within the ZPD." },
-                { q: "A teacher asking leading questions to guide a student towards a solution is an example of...", o: ["Scaffolding", "Assessment", "Distraction", "Reinforcement"], a: 0, e: "Asking questions is a powerful scaffolding technique that encourages the student to think through the problem without giving them the answer." },
-                { q: "The ZPD suggests that instruction should be targeted...", o: ["Exactly at the student's current level", "Slightly ahead of the student's current development", "Far beyond the student's current level", "On topics the student chooses randomly"], a: 1, e: "The 'sweet spot' for learning is in the ZPD, just beyond what the student can do alone." },
-                { q: "Which of these would Vygotsky see as the most critical for learning to write an essay?", o: ["A quiet room", "A good pen", "Feedback from a peer or teacher", "A strict deadline"], a: 2, e: "The social interaction and guidance from an MKO (the peer or teacher) is the key driver of learning in his theory." },
-                { q: "The ultimate goal of scaffolding is to make the learner...", o: ["Dependent on the teacher", "Faster than their peers", "Independent and self-regulating", "Aware of their limitations"], a: 2, e: "The support is designed to be withdrawn so the learner can eventually perform the task on their own." },
-                { q: "ZPD is most associated with which psychologist?", o: ["Sigmund Freud", "B.F. Skinner", "Jean Piaget", "Lev Vygotsky"], a: 3, e: "The Zone of Proximal Development is the cornerstone of Lev Vygotsky's sociocultural theory of learning." },
-                { q: "If a student can solve a problem with hints, but not alone, the problem is likely...", o: ["Outside their ZPD", "Within their ZPD", "Below their ZPD", "Irrelevant to their learning"], a: 1, e: "This is the definition of the ZPD: the space where learning is possible with appropriate guidance." },
-                { q: "Vygotsky believed that learning...", o: ["precedes development", "is the same as development", "follows development", "is unrelated to development"], a: 0, e: "A key idea is that learning, through social interaction, pulls development forward. We learn, and therefore we develop." },
-                { q: "Which activity is LEAST aligned with Vygotsky's principles?", o: ["A debate club", "A silent reading comprehension test", "A paired programming task", "A group mural painting project"], a: 1, e: "A silent, individual test measures only what the student can do alone, ignoring the social aspect of learning and the ZPD." },
-                { q: "The interaction between a learner and an MKO is best described as...", o: ["A one-way transmission", "A collaborative dialogue", "A competitive challenge", "A passive observation"], a: 1, e: "Learning in the ZPD is an active, co-constructed process, not a passive reception of information." },
-                { q: "What is the role of cultural tools (e.g., language, maps, computers) in Vygotsky's theory?", o: ["They are distractions from true learning", "They are mediators of cognitive development", "They are only useful for adults", "They are less important than genetics"], a: 1, e: "Vygotsky argued that we use cultural tools to mediate our interaction with the world, and these tools shape how we think." },
-                { q: "A teacher who thinks 'I need to find out what my students can do with my help' is thinking about...", o: ["Standardized scores", "The ZPD", "Classroom management", "Curriculum standards"], a: 1, e: "This question is the very essence of identifying and teaching within the Zone of Proximal Development." },
-                { q: "The main takeaway from ZPD for educators is to provide...", o: ["More homework", "Challenging yet achievable tasks with support", "Easier tasks to build confidence", "More frequent tests"], a: 1, e: "The core application is to find that 'sweet spot' of challenge and provide the necessary scaffolding for success." },
-                { q: "Vygotsky's work suggests that a child's development is...", o: ["A universal sequence that is the same in all cultures", "Largely determined by their social and cultural context", "Primarily a result of genetic inheritance", "A process of individual discovery"], a: 1, e: "Unlike Piaget's universal stages, Vygotsky's sociocultural theory emphasizes the profound impact of culture on cognitive development." }
-            ];
-
-            // --- COUNTDOWN FUNCTIONS ---
-            function startCountdown() {
-                const countDownDate = new Date("Jul 31, 2025 23:59:59").getTime();
-
-                const interval = setInterval(function() {
-                    const now = new Date().getTime();
-                    const distance = countDownDate - now;
-
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    
-                    const daysEl = document.getElementById("days");
-                    const hoursEl = document.getElementById("hours");
-                    const minutesEl = document.getElementById("minutes");
-                    const secondsEl = document.getElementById("seconds");
-
-                    if (daysEl && hoursEl && minutesEl && secondsEl) {
-                        daysEl.innerText = days.toString().padStart(2, '0');
-                        hoursEl.innerText = hours.toString().padStart(2, '0');
-                        minutesEl.innerText = minutes.toString().padStart(2, '0');
-                        secondsEl.innerText = seconds.toString().padStart(2, '0');
-                    }
-
-                    if (distance < 0) {
-                        clearInterval(interval);
-                        const countdownContainer = document.getElementById("countdown-container");
-                        if (countdownContainer) {
-                            countdownContainer.innerHTML = '<h3 class="font-bold text-xl text-red-400 p-8 text-center">DEADLINE EXPIRED</h3>';
-                        }
-                    }
-                }, 1000);
-            }
-
-
-            // --- QUIZ FUNCTIONS ---
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            }
-
-            function showNameInputScreen() {
-                quizContainer.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full text-center">
-                        <i data-lucide="user-check" class="w-16 h-16 text-[#F1D24B] mb-4"></i>
-                        <h3 class="text-2xl font-bold text-stone-800 mb-2">Welcome to the Challenge!</h3>
-                        <p class="text-stone-600 mb-6">Please enter your name to generate the certificate.</p>
-                        <div class="w-full max-w-sm">
-                            <label for="teacherNameInput" class="sr-only">Your Name</label>
-                            <input type="text" id="teacherNameInput" placeholder="Type your name here..." class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-[#F1D24B] focus:border-[#F1D24B] mb-2">
-                            <p id="nameError" class="text-red-600 text-sm hidden mb-4">Name is required.</p>
-                            <button onclick="window.startQuiz()" class="w-full bg-[#F1D24B] text-stone-800 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors">
-                                Start Challenge
-                            </button>
-                        </div>
-                    </div>
-                `;
-                lucide.createIcons();
-            }
-
-            window.startQuiz = function() {
-                const nameInput = document.getElementById('teacherNameInput');
-                const nameError = document.getElementById('nameError');
-                
-                if (nameInput && !nameInput.value.trim()) {
-                    if(nameError) nameError.classList.remove('hidden');
-                    return;
-                }
-                
-                if(nameError) nameError.classList.add('hidden');
-                if(nameInput) teacherName = nameInput.value.trim();
-                
-                currentQuestionIndex = 0;
-                // --- UPDATED LOGIC ---
-                // Shuffle the entire array of 50 questions
-                const shuffled = shuffleArray([...fullQuizData]);
-                // Take the first 25 for this challenge attempt, ensuring no repeats
-                quizQuestions = shuffled.slice(0, questionsInChallenge); 
-                displayQuestion();
-            }
-
-            function displayQuestion() {
-                const questionData = quizQuestions[currentQuestionIndex];
-                const optionsHtml = questionData.o.map((option, index) =>
-                    `<button class="quiz-option" onclick="window.selectAnswer(${index})">${option}</button>`
-                ).join('');
-
-                quizContainer.innerHTML = `
-                    <div id="quiz-content" class="flex flex-col h-full">
-                        <div class="flex-grow">
-                            <p class="text-sm font-semibold text-stone-500 mb-4">Question ${currentQuestionIndex + 1} of ${questionsInChallenge} (Streak: ${currentQuestionIndex})</p>
-                            <h3 class="text-lg font-bold mb-4 text-stone-800">${questionData.q}</h3>
-                            <div id="quiz-options">${optionsHtml}</div>
-                        </div>
-                        <div id="feedback-area" class="mt-4"></div>
-                    </div>
-                `;
-            }
-
-            window.selectAnswer = function(selectedIndex) {
-                const questionData = quizQuestions[currentQuestionIndex];
-                const options = document.querySelectorAll('#quiz-options .quiz-option');
-                const feedbackArea = document.getElementById('feedback-area');
-
-                options.forEach(button => button.disabled = true);
-                const selectedButton = options[selectedIndex];
-
-                if (selectedIndex === questionData.a) {
-                    selectedButton.classList.add('correct');
-                    feedbackArea.innerHTML = `<div class="p-3 bg-green-50 text-green-700 border border-green-200 rounded-lg"><p><strong>Correct!</strong> Moving to the next question...</p></div>`;
-                    
-                    setTimeout(() => {
-                        currentQuestionIndex++;
-                        if (currentQuestionIndex >= questionsInChallenge) {
-                            showSuccessScreen();
-                        } else {
-                            displayQuestion();
-                        }
-                    }, 1500);
-
-                } else {
-                    selectedButton.classList.add('incorrect');
-                    options[questionData.a].classList.add('correct');
-                    feedbackArea.innerHTML = `
-                        <div class="p-3 bg-red-50 text-red-700 border border-red-200 rounded-lg">
-                            <p><strong>Incorrect.</strong> The challenge has been reset. <br><strong>Explanation:</strong> ${questionData.e}</p>
-                            <button class="mt-3 font-bold py-2 px-4 rounded-lg bg-[#F1D24B] text-stone-800 w-full" onclick="window.init()">Try Again</button>
-                        </div>
-                    `;
-                }
-            }
+            `;
             
-            function showSuccessScreen() {
-                 const completionDate = new Date();
-                 const formattedDate = completionDate.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
-                 const formattedTime = completionDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                 const completionTimestamp = `${formattedDate} at ${formattedTime}`;
+            // Hide scoring buttons for the last prompt (ACC, which is only informational)
+            const isLastPrompt = currentQuestionIndex === totalQuestions - 1;
+            const scoringSection = isLastPrompt ? '' : `
+                <!-- Criteria Box -->
+                <div class="criteria-box">
+                    <h4 class="text-xl font-bold text-stone-800 mb-4 border-b pb-2">Student Answer Evaluation</h4>
+                    ${criteriaHtml}
+                </div>
+            `;
 
-                 quizContainer.innerHTML = `
-                    <div id="certificate" class="text-center flex flex-col items-center justify-center h-full p-6 rounded-lg border-2 border-yellow-400">
-                        <i data-lucide="award" class="w-20 h-20 text-yellow-500 mb-4"></i>
-                        <h3 class="text-3xl font-bold mb-2 text-stone-800">Challenge Complete!</h3>
-                        <p class="text-lg text-stone-600 mb-4">Congratulations, you have successfully answered ${questionsInChallenge} questions in a row.</p>
-                        
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 w-full my-6 text-left shadow-inner">
-                            <p><strong>Teacher:</strong> <span class="font-semibold">${teacherName}</span></p>
-                            <p><strong>Module:</strong> Zone of Proximal Development (ZPD)</p>
-                            <p><strong>Completed on:</strong> ${completionTimestamp}</p>
-                            <p><strong>Status:</strong> <span class="font-bold text-green-600">Completed</span></p>
+
+            // Check if overall score was given to enable the next button
+            const scoredOrLastPrompt = isLastPrompt || questionData.scores[overallScoreKey] !== null;
+            const nextButtonDisabled = scoredOrLastPrompt ? '' : 'disabled';
+            const buttonText = isLastPrompt ? "Finish Test and Generate Level" : ((currentQuestionIndex < totalQuestions - 1) ? "Next Question" : "Finish Test");
+            const nextFunction = (currentQuestionIndex < totalQuestions - 1) ? "nextQuestion()" : "showResult()";
+            
+            const stopTestButton = `
+                <button class="stop-test-button text-lg px-8 py-3" onclick="showResult(true)">
+                    End Test Here and View Result
+                </button>
+            `;
+
+            quizContainer.innerHTML = `
+                <div id="quiz-content">
+                     <div class="flex justify-between items-center mb-6">
+                        <img src="${quizLogoUrl}" alt="SLAP Logo Preto" class="w-24 h-auto">
+                        <div class="text-3xl font-bold text-stone-800 p-2 border-2 border-stone-800 rounded-lg">
+                            <span id="timer-display">00:00</span>
                         </div>
-
-                        <p class="font-semibold text-blue-800 bg-blue-100 p-3 rounded-md">Take a screenshot of this certificate and send it to the coordination team as proof of completion.</p>
-                        
-                        <button class="mt-6 font-bold py-3 px-6 rounded-lg bg-[#F1D24B] text-stone-800 hover:bg-yellow-500 transition-colors" onclick="window.init()">Play Again</button>
+                     </div>
+                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                        <div class="w-full sm:w-auto mb-3 sm:mb-0">
+                            <p class="text-sm font-semibold text-stone-500 mb-1">Question ${currentQuestionIndex + 1} of ${totalQuestions}</p>
+                            <div class="progress-bar-background">
+                                <div class="progress-bar-foreground" style="width: ${progressPercentage}%;"></div>
+                            </div>
+                        </div>
+                        <!-- Centralização do Nível Foco em Mobile/Desktop -->
+                        <div class="text-center w-full sm:w-auto ml-0 sm:ml-4 p-2 bg-yellow-50 rounded-lg"> 
+                            <p class="text-sm font-semibold text-stone-500">Nível Foco</p>
+                            <span class="text-xl font-bold text-stone-900">${questionData.level}</span>
+                        </div>
+                     </div>
+                    
+                    <!-- Prompt for the Teacher (text in Portuguese as requested) -->
+                    <div class="p-6 bg-indigo-50 rounded-xl mb-6">
+                        <p class="text-sm font-semibold text-indigo-600 mb-2">PROMPT ORAL (Professor pergunta):</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-indigo-800">${questionData.prompt}</h3>
                     </div>
-                `;
-                lucide.createIcons();
+                    
+                    ${scoringSection}
+
+                    <div id="quiz-nav" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        ${stopTestButton}
+                        <button class="action-button text-lg px-8 py-3" onclick="${nextFunction}" ${nextButtonDisabled}>
+                            ${buttonText} 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                </div>`;
+            
+            // Update progress bar after HTML injection
+            setTimeout(() => {
+                quizContainer.querySelector('.progress-bar-foreground').style.width = `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
+            }, 100);
+            
+            updateTimerDisplay();
+        }
+
+        window.setOverallScore = function(scoreValue, clickedButton) {
+            const questionData = studentScores[currentQuestionIndex];
+            
+            questionData.scores[overallScoreKey] = scoreValue;
+            
+            const criteriaDiv = document.getElementById('overall-criteria');
+            criteriaDiv.querySelectorAll('.score-button').forEach(button => {
+                button.classList.remove('selected');
+            });
+            clickedButton.classList.add('selected');
+            
+            const allScored = questionData.scores[overallScoreKey] !== null;
+            const nextButton = document.querySelector('#quiz-nav .action-button:not(.stop-test-button)'); 
+            if (nextButton) {
+                nextButton.disabled = !allScored;
             }
+        }
 
-            // --- AUDIO PLAYER LOGIC ---
-            document.querySelectorAll('.audio-player-container').forEach(player => {
-                const audio = player.querySelector('.audio-element');
-                const playPauseBtn = player.querySelector('.play-pause-button');
-                const progressBar = player.querySelector('.progress-bar');
-                const timeDisplay = player.querySelector('.time-display');
+        window.nextQuestion = function() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        // --- GRAMMAR GRID FUNCTIONS ---
+        
+        function renderGrammarGrid() {
+            const cardsContainer = document.getElementById('grammar-cards-container');
+            cardsContainer.innerHTML = '';
+            
+            grammarTopics.forEach(topicData => {
+                const topicKey = topicData.topic;
+                const currentScore = grammarScores[topicKey] || 0; 
                 
-                function formatTime(seconds) {
-                    const minutes = Math.floor(seconds / 60);
-                    const secs = Math.floor(seconds % 60);
-                    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-                }
+                const card = document.createElement('div');
+                card.className = 'grammar-card';
+                
+                // Header
+                card.innerHTML = `<div class="grammar-topic-header">${topicKey}</div>`;
+                
+                // Options Container
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'grammar-options-container';
 
-                audio.addEventListener('loadedmetadata', () => { if (audio.duration) { progressBar.max = Math.floor(audio.duration); timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`; } });
-                audio.addEventListener('timeupdate', () => { if (audio.duration) { progressBar.value = Math.floor(audio.currentTime); timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`; } });
-                playPauseBtn.addEventListener('click', () => { if (audio.paused) { document.querySelectorAll('.audio-element').forEach(otherAudio => { if (otherAudio !== audio) { otherAudio.pause(); const otherPlayer = otherAudio.closest('.audio-player-container'); otherPlayer.querySelector('.play-icon').classList.remove('hidden'); otherPlayer.querySelector('.pause-icon').classList.add('hidden'); } }); audio.play(); playPauseBtn.querySelector('.play-icon').classList.add('hidden'); playPauseBtn.querySelector('.pause-icon').classList.remove('hidden'); } else { audio.pause(); playPauseBtn.querySelector('.play-icon').classList.remove('hidden'); playPauseBtn.querySelector('.pause-icon').classList.add('hidden'); } });
-                audio.addEventListener('ended', () => { playPauseBtn.querySelector('.play-icon').classList.remove('hidden'); playPauseBtn.querySelector('.pause-icon').classList.add('hidden'); progressBar.value = 0; audio.currentTime = 0; });
-                progressBar.addEventListener('input', () => { audio.currentTime = progressBar.value; });
+                // Create score pills (1: Weak, 2: Medium, 3: Strong)
+                [
+                    { score: 1, label: 'Weak', icon: grammarIcons[1] },
+                    { score: 2, label: 'Medium', icon: grammarIcons[2] },
+                    { score: 3, label: 'Strong', icon: grammarIcons[3] }
+                ].forEach(item => {
+                    const pill = document.createElement('div');
+                    const isSelected = currentScore === item.score;
+                    
+                    pill.className = `grammar-pill ${isSelected ? `selected-${item.score}` : ''}`;
+                    pill.setAttribute('data-topic', topicKey);
+                    pill.setAttribute('data-score', item.score);
+                    
+                    // Renderiza o ícone e o label
+                    pill.innerHTML = `${item.icon}<span class="text-xs">${item.label}</span>`;
+                    
+                    pill.onclick = function() {
+                        setGrammarScore(topicKey, item.score, this); 
+                    };
+                    optionsContainer.appendChild(pill);
+                });
+                
+                card.appendChild(optionsContainer);
+                cardsContainer.appendChild(card);
             });
             
+            // If all topics are scored (all are > 0), enable the submit button
+            checkGrammarGridCompletion();
+        }
+        
+        window.setGrammarScore = function(topicKey, scoreValue, clickedPill) {
+            // Update the score in the global object
+            grammarScores[topicKey] = scoreValue;
+            
+            // Visual update: Remove seleção de todas as pills do mesmo tópico
+            const optionsContainer = clickedPill.parentElement;
+            optionsContainer.querySelectorAll('.grammar-pill').forEach(pill => {
+                pill.classList.remove('selected-1', 'selected-2', 'selected-3');
+            });
+            
+            // Adiciona seleção à pill clicada
+            clickedPill.classList.add(`selected-${scoreValue}`);
+            
+            checkGrammarGridCompletion();
+        }
+        
+        function checkGrammarGridCompletion() {
+            const allScored = grammarTopics.every(topic => grammarScores[topic.topic] > 0);
+            const submitButton = document.getElementById('submit-grammar-grid');
+            if (submitButton) {
+                submitButton.disabled = !allScored;
+            }
+            return allScored;
+        }
 
-            // --- INITIALIZATION ---
-            window.init = function() {
-                showNameInputScreen();
-                lucide.createIcons();
+        window.submitGrammarGrid = function() {
+            if (!checkGrammarGridCompletion()) return;
+
+            // Mapeamento dos 10 tópicos
+            const scores = {
+                'Verb To Be': grammarScores['Verb To Be'] || 0,
+                'Simple Present / Future Tenses (Will, Going To)': grammarScores['Simple Present / Future Tenses (Will, Going To)'] || 0,
+                'Present Continuous': grammarScores['Present Continuous'] || 0,
+                'Simple Past / Past Continuous': grammarScores['Simple Past / Past Continuous'] || 0,
+                'Superlatives & Comparatives': grammarScores['Superlatives & Comparatives'] || 0,
+                'Present Perfect': grammarScores['Present Perfect'] || 0,
+                'Conditionals (Zero, First, Second)': grammarScores['Conditionals (Zero, First, Second)'] || 0,
+                'Would / Past Perfect': grammarScores['Would / Past Perfect'] || 0,
+                'Modal Verbs (Complex) / Reported Speech': grammarScores['Modal Verbs (Complex) / Reported Speech'] || 0,
+                'Mixed Conditionals / Euphemisms': grammarScores['Mixed Conditionals / Euphemisms'] || 0,
+            };
+
+            let grammarLevel = 'Starter 1 (Pré-A1)'; // Default
+
+            // REGRAS DE TRANSIÇÃO (PROFICIÊNCIA MÍNIMA)
+            
+            // 1. STARTER 2 (A1)
+            // Domínio: Verb to Be (>= 2). Conhecimento: Simple Present/Future e Present Continuous (ambos >= 1)
+            if (scores['Verb To Be'] >= 2 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 1 && scores['Present Continuous'] >= 1) {
+                grammarLevel = 'Starter 2 (A1)';
+            }
+            
+            // 2. FRESHMAN 2 (A2+) - Domínio dos Presentes/Futuro
+            // Domínio: Verb to Be (>= 3). Conhecimento: Simple Present/Future (>= 2) e Past Tenses (>= 1, pois começa aqui)
+            if (scores['Verb To Be'] >= 3 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 2 && scores['Present Continuous'] >= 2 && scores['Simple Past / Past Continuous'] >= 1) {
+                 grammarLevel = 'Freshman 2 (A2+)';
+            }
+            
+            // 3. SOPHOMORE 1 (B1) - DOMÍNIO DE PASSADO SIMPLES (Essencial)
+            // Domínio: Passado (>= 3). E Superlatives (>= 1)
+            if (scores['Verb To Be'] >= 3 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 2 && scores['Simple Past / Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] >= 1) {
+                grammarLevel = 'Sophomore 1 (B1)'; 
+            }
+            
+            // 4. SOPHOMORE 2 (B1+) - Domínio de Passado, Comparativos/Superlativos e Present Perfect (Novo)
+            // Domínio: Passado (>= 3), Comparatives (>= 2). Conhecimento: Present Perfect (>= 1, pois começa aqui)
+            if (scores['Simple Past / Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] >= 2 && scores['Present Perfect'] >= 1) {
+                grammarLevel = 'Sophomore 2 (B1+)';
             }
 
-            startCountdown(); // Starts the countdown timer
-            window.init(); // Starts the quiz flow
-        });
+            // 5. JUNIOR 1 (B1+/B2 low) - Domínio Present Perfect e Conditionals (Novo)
+            // Domínio: Present Perfect (>= 2). Conhecimento: Conditionals (>= 1, pois aprende aqui)
+            if (scores['Present Perfect'] >= 2 && scores['Conditionals (Zero, First, Second)'] >= 1) {
+                grammarLevel = 'Junior 1 (B1+/B2 low)';
+            }
+
+            // 6. JUNIOR 2 (B2 low) - Domínio Condicionais e Past Perfect (Novo)
+            // Domínio: Conditionals (>= 2). Conhecimento: Would/Past Perfect (>= 1, pois aprende aqui)
+            if (scores['Conditionals (Zero, First, Second)'] >= 2 && scores['Would / Past Perfect'] >= 1) {
+                grammarLevel = 'Junior 2 (B2 low)';
+            }
+
+            // 7. SENIOR 1/2 (B2) - Lapidação e Estruturas Complexas
+            // Requer: Nível de domínio alto (média >= 2.5) nos tópicos principais e Advanced Structures >= 2
+            const majorTopicsScored = [
+                scores['Verb To Be'], 
+                scores['Simple Present / Future Tenses (Will, Going To)'], 
+                scores['Simple Past / Past Continuous'], 
+                scores['Present Perfect'], 
+                scores['Conditionals (Zero, First, Second)']
+            ];
+            const sumMajorScores = majorTopicsScored.reduce((a, b) => a + b, 0);
+            const avgMajorScore = sumMajorScores / majorTopicsScored.length; // Média de 5 tópicos (Max 3)
+
+            // Se a média nos tópicos fundamentais for >= 2.5 (muito bom) E conhece Advanced Structures:
+            if (avgMajorScore >= 2.5 && scores['Modal Verbs (Complex) / Reported Speech'] >= 2) {
+                grammarLevel = 'Senior 1 / Senior 2 (Advanced)'; 
+            }
+            
+            // TRATAMENTO DE SUB-NÍVEIS (Para refinar o resultado, se necessário)
+            
+            // Starter 2 -> Freshman 1: Se já domina Verb To Be (3) e Presentes (2)
+            if (grammarLevel === 'Starter 2 (A1)' && scores['Verb To Be'] === 3 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 2) {
+                 grammarLevel = 'Freshman 1 (A2) - (Needs practice on Simple Tenses)';
+            } 
+            // Sophomore 1 -> Freshman 2: Se domina Passado (3), mas não Comparatives/Superlatives (<= 1)
+            else if (grammarLevel === 'Sophomore 1 (B1)' && scores['Superlatives & Comparatives'] <= 1) {
+                grammarLevel = 'Freshman 2 (A2+) - (Needs strong focus on Comparatives/Superlatives)';
+            }
+
+
+            const maxGrammarScore = grammarTopics.length * 3; // 10 tópicos * 3 pontos = 30
+            const totalGrammarScore = Object.values(scores).reduce((a, b) => a + b, 0);
+            const averageScore = totalGrammarScore / grammarTopics.length; 
+
+            document.getElementById('grammar-score').textContent = `Total Score: ${totalGrammarScore} / ${maxGrammarScore} pts (Average: ${averageScore.toFixed(2)})`;
+            document.getElementById('grammar-level').textContent = grammarLevel;
+            document.getElementById('grammar-grid-result').classList.remove('hidden');
+        }
+
+
+        // --- RESULT AND LEVEL CALCULATION FUNCTIONS ---
+
+        function calculateLevel(quickFinish = false) {
+            totalScore = 0;
+            
+            let scoredQuestions = studentScores.slice(0, currentQuestionIndex);
+            
+            if (!quickFinish && currentQuestionIndex < studentScores.length) {
+                const lastQuestion = studentScores[currentQuestionIndex];
+                if (lastQuestion.scores[overallScoreKey] !== null) {
+                    scoredQuestions = studentScores.slice(0, currentQuestionIndex + 1);
+                }
+            }
+            
+            if (scoredQuestions.length > 0 && scoredQuestions[scoredQuestions.length - 1].level === 'ACC') {
+                 scoredQuestions.pop();
+            }
+
+            const questionsAnswered = scoredQuestions.length;
+            
+            scoredQuestions.forEach(q => {
+                const questionScore = q.scores[overallScoreKey] || 0;
+                totalScore += questionScore; 
+            });
+
+            const maxScoreForAnswered = questionsAnswered * 3;
+            const totalPossibleQuestions = oralPrompts.length - 1; // 40 valid questions
+            
+            let level = '';
+            let message = '';
+            
+            if (questionsAnswered === 0) {
+                 level = 'Starter 1 (Pré-A1)';
+                 message = 'Teste interrompido antes de qualquer pontuação. Nível estimado: Starter 1.';
+            } else {
+                 const averageScore = totalScore / questionsAnswered;
+
+                 // Map Average Score (0 to 3) to 9 levels
+                 if (averageScore < 0.75) { level = 'Starter 1 (Pré-A1)'; message = 'O aluno demonstra conhecimento muito limitado e dificuldade em frases básicas. É indicado o nível Starter 1 para construir as bases.'; }
+                 else if (averageScore < 1.05) { level = 'Starter 2 (A1)'; message = 'O aluno consegue usar o Presente Simples e vocabulário de sobrevivência, mas com erros frequentes. Deve consolidar as rotinas e introduzir o futuro/passado simples.'; }
+                 else if (averageScore < 1.35) { level = 'Freshman 1 (A2)'; message = 'O aluno lida com tarefas simples, mas precisa de reforço no Passado Simples e no uso de "should". Foco em vocabulário cotidiano mais vasto.'; }
+                 else if (averageScore < 1.65) { level = 'Freshman 2 (A2+)'; message = 'O aluno se comunica sobre o passado com alguma dificuldade, precisando de prática em "used to", "could" e sentenças comparativas. Bom para iniciar estruturas mais complexas.'; }
+                 else if (averageScore < 1.95) { level = 'Sophomore 1 (B1)'; message = 'O aluno consegue dar conselhos e falar sobre experiências pessoais (Present Perfect), mas a fluência em tópicos mais amplos é limitada. Deve focar no Segundo Condicional.'; }
+                 else if (averageScore < 2.25) { level = 'Sophomore 2 (B1+)'; message = 'O aluno usa o Present Perfect com "just" e "yet" e introduz expressões idiomáticas simples. Precisa de mais desenvoltura e precisão gramatical em temas complexos.'; }
+                 else if (averageScore < 2.55) { level = 'Junior 1 (B1+/B2 low)'; message = 'O aluno consegue usar o Primeiro Condicional e introduzir expressões idiomáticas. O foco deve ser em aprimorar o discurso para lidar com temas abstratos e o Modal Perfect.'; }
+                 else if (averageScore < 2.85) { level = 'Junior 2 (B2 low)'; message = 'O aluno demonstra boa fluência, mas precisa de vocabulário mais específico e phrasal verbs mais variados para expressar opiniões abstratas e lidar com diferenças culturais.'; }
+                 else if (averageScore < 3.0) { level = 'Senior 1 (B2)'; message = 'O aluno tem um alto nível de comunicação. Deve focar em dominar o Third Conditional e o Reported Speech para refinar a precisão e complexidade sintática.'; }
+                 else { level = 'ACC (Advanced Conversation Class)'; message = 'Parabéns! O aluno tem domínio avançado (B2 High / C1+), conseguindo usar Mixed Conditionals, Reported Speech e vocabulário sofisticado (eufemismos). Indicado para o nível Advanced Conversation Class (ACC).'; } // Score 3.0
+
+                 if (quickFinish && questionsAnswered < totalPossibleQuestions) {
+                    message = `⚠️ Teste interrompido após ${questionsAnswered} de ${totalPossibleQuestions} questões. A avaliação do nível foi feita com base nas respostas dadas. ${message}`;
+                 }
+            }
+
+
+            return { 
+                score: totalScore, 
+                maxScore: maxScoreForAnswered, 
+                level, 
+                message, 
+                answeredCount: questionsAnswered,
+                totalPossible: totalPossibleQuestions
+            };
+        }
+
+        window.showResult = function(quickFinish = false) {
+            stopTimer(); // Stop the timer
+            
+            // If not a quick finish, ensure the last question score is saved
+            if (!quickFinish && currentQuestionIndex < studentScores.length && studentScores[currentQuestionIndex].scores[overallScoreKey] === null) {
+                studentScores[currentQuestionIndex].scores[overallScoreKey] = 0; 
+            }
+
+            const resultData = calculateLevel(quickFinish);
+            
+            hideAllViews();
+            resultView.classList.remove('hidden');
+
+            const timeDisplay = formatTime(totalTimeElapsed);
+            document.getElementById('result-time').textContent = `Total Assessment Time: ${timeDisplay}`;
+            
+            let scoreText;
+            if (resultData.answeredCount < resultData.totalPossible) {
+                scoreText = `Partial Score: ${resultData.score} of ${resultData.maxScore} pts evaluated (${resultData.answeredCount} questions)`;
+            } else {
+                 scoreText = `Total Score: ${resultData.score} of ${resultData.maxScore} pts (${resultData.answeredCount} questions)`;
+            }
+            document.getElementById('result-score').textContent = scoreText;
+
+            document.getElementById('result-level').textContent = resultData.level;
+            document.getElementById('result-message').textContent = resultData.message;
+        }
+
+        window.restartQuiz = function() {
+            startSplash1();
+            totalScore = 0;
+            currentQuestionIndex = 0;
+            studentScores = [];
+            grammarScores = {};
+            stopTimer();
+            totalTimeElapsed = 0;
+            startTime = 0;
+            // Hide grammar grid results if they were visible
+            document.getElementById('grammar-grid-result').classList.add('hidden');
+        }
+
+        // --- START FLOW ---
+        window.onload = startSplash1;
     </script>
 </body>
 </html>
