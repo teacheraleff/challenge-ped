@@ -139,11 +139,6 @@
             border-color: #EAB308;
             color: #1c1917;
         }
-        /* REMOVIDO: Hover effect para que a cor só mude ao clicar/selecionar */
-        /* .score-button:hover:not(.selected) {
-            background-color: #fceb9e;
-        } */
-        
         /* Mapeamento de cores para os 4 critérios */
         .score-button.score-0 { background-color: #fca5a5; color: #991B1B; } /* Red for 0 (Didn't Answer) */
         .score-button.score-1 { background-color: #FEE2E2; color: #991B1B; } /* Light Red for 1 (Weak Answer) */
@@ -158,7 +153,7 @@
             border: 1px solid #e7e5e4;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* Sombra muito suave */
         }
-        /* NOVO ESTILO: Botão de Parar Teste usando base do action-button */
+        /* Botões de Ação Secundária (Parar Teste e Pular Nível) */
         .stop-test-button {
             background-color: #ef4444; /* red-500 */
             color: white; 
@@ -178,6 +173,20 @@
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+        }
+        .skip-level-button {
+             background-color: #4f46e5; /* indigo-600 */
+             color: white; 
+             box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4); 
+             padding: 0.75rem 1.5rem;
+             border-radius: 9999px;
+             font-weight: 700;
+             cursor: pointer;
+             transition: background-color 0.2s, transform 0.2s;
+        }
+        .skip-level-button:hover {
+            background-color: #4338ca; /* indigo-700 */
+            transform: translateY(-2px);
         }
         
         /* Estilos do Grammar Grid (NOVO LAYOUT DE CARTÕES/GRID) */
@@ -295,7 +304,8 @@
         <!-- SPLASH SCREEN 2: CONFIRMATION (DARK BACKGROUND) -->
         <div id="splash-2-view" class="dark-splash hidden shadow-none">
             <div>
-                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
+                 <!-- CORREÇÃO: Removida a opacidade do logo (opacity-80) -->
+                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6">
                 <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg mx-auto">
                     Teacher, o aluno está preparado para iniciar o teste?
                 </h2>
@@ -319,7 +329,11 @@
             
             <!-- GRAMMAR GRID VIEW (LIGHT BACKGROUND) -->
             <div id="grammar-grid-view" class="hidden w-full p-6 sm:p-8">
-                <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
+                <!-- NOVO: Logo e Título alinhados -->
+                <div class="flex items-center gap-4 mb-6">
+                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-24 h-auto">
+                    <h2 class="text-3xl font-bold text-stone-800">Grammar Grid Evaluation</h2>
+                </div>
                 <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
                 
                 <!-- NOVO CONTAINER COM GRID RESPONSIVO -->
@@ -647,6 +661,62 @@
 
             displayQuestion();
         }
+        
+        /**
+         * Skips to the first question of the next distinct proficiency level.
+         * All skipped questions in the current level are scored as 3 (Strong Answer).
+         */
+        window.skipToNextLevel = function() {
+            if (currentQuestionIndex >= studentScores.length - 1) {
+                showResult();
+                return;
+            }
+
+            const currentLevel = studentScores[currentQuestionIndex].level;
+            let nextIndex = -1;
+            
+            // 1. Find the index of the first question belonging to a different (higher) level
+            for (let i = currentQuestionIndex + 1; i < studentScores.length; i++) {
+                if (studentScores[i].level !== currentLevel) {
+                    nextIndex = i;
+                    break;
+                }
+            }
+
+            let targetIndex = nextIndex !== -1 ? nextIndex : studentScores.length - 1;
+
+            // 2. Score ALL questions from current index up to targetIndex - 1 as 3 (Strong Answer).
+            for (let i = currentQuestionIndex; i < targetIndex; i++) {
+                // Only score if not already scored (including being marked as skipped: -1)
+                if (studentScores[i].scores[overallScoreKey] === null) { 
+                    studentScores[i].scores[overallScoreKey] = 3; 
+                }
+            }
+
+            currentQuestionIndex = targetIndex;
+            
+            // If we skip to ACC prompt, finish the test automatically
+            if (currentQuestionIndex === studentScores.length - 1) {
+                showResult();
+            } else {
+                displayQuestion();
+            }
+        }
+        
+        /**
+         * Marks the current question as explicitly skipped, excluding it from level calculation.
+         * The special score value is -1.
+         */
+        window.skipQuestion = function() {
+            const questionData = studentScores[currentQuestionIndex];
+            
+            // Mark current question as ignored (-1)
+            questionData.scores[overallScoreKey] = -1; 
+            
+            // Automatically move to the next question
+            window.nextQuestion(); 
+        }
+
 
         function displayQuestion() {
             // Alterado para injetar o conteúdo diretamente no wrapper da quiz view
@@ -668,19 +738,33 @@
             // Render score buttons with SVGs
             const scoreButtons = scoreValues.map(score => {
                 const isSelected = currentScore === score.value;
-                // CORREÇÃO: Removido sm:justify-start de #overall-criteria (abaixo) para manter centralizado
+                // Disable if already scored/skipped (score is not null) AND it's not the selected value
+                const isDisabled = currentScore !== null && currentScore !== score.value;
                 const buttonClasses = `score-button score-${score.value} ${isSelected ? 'selected' : ''}`; 
-                return `<button class="${buttonClasses}" onclick="setOverallScore(${score.value}, this)">
+                return `<button class="${buttonClasses}" onclick="setOverallScore(${score.value}, this)" ${isDisabled ? 'disabled' : ''}>
                             ${score.icon}
                             <span class="text-xs font-medium">${score.label}</span>
                         </button>`;
             }).join('');
+            
+            // NOVO BOTÃO: Skip This Question
+            const skipQuestionButton = questionData.level === 'ACC' ? '' : `
+                <button id="skip-q-button" 
+                        class="score-button bg-stone-900 text-white hover:bg-stone-700 transition-none" 
+                        onclick="skipQuestion()" 
+                        ${currentScore !== null ? 'disabled' : ''}
+                        style="min-width: 120px;">
+                    <svg class="score-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+                    <span class="text-xs font-medium">Skip Question</span>
+                </button>
+            `;
 
             const criteriaHtml = `
                 <div class="mb-4 text-center">
                     <p class="font-bold text-stone-700 mb-2">Overall Answer Score</p>
                     <div id="overall-criteria" class="flex flex-wrap gap-2 justify-center">
                         ${scoreButtons}
+                        ${skipQuestionButton} 
                     </div>
                 </div>
             `;
@@ -696,18 +780,29 @@
                 </div>
             `;
 
-
-            // Check if overall score was given to enable the next button
+            // --- NAVIGATION BUTTONS ---
+            
+            // Check if overall score was given to enable the next button (any score value, even -1 for skipped)
             const scoredOrLastPrompt = isLastPrompt || questionData.scores[overallScoreKey] !== null;
             const nextButtonDisabled = scoredOrLastPrompt ? '' : 'disabled';
             const buttonText = isLastPrompt ? "Finish Test and Generate Level" : ((currentQuestionIndex < totalQuestions - 1) ? "Next Question" : "Finish Test");
             const nextFunction = (currentQuestionIndex < totalQuestions - 1) ? "nextQuestion()" : "showResult()";
             
             const stopTestButton = `
-                <button class="stop-test-button text-lg px-8 py-3" onclick="showResult(true)">
+                <button class="stop-test-button text-lg px-8 py-3 w-full sm:w-auto" onclick="showResult(true)">
                     End Test Here and View Result
                 </button>
             `;
+            
+            // Show skip button only if not on the last level (ACC is the last index)
+            const isLastLevelBlock = questionData.level === oralPrompts[oralPrompts.length - 2].level || isLastPrompt;
+
+            // REMOVIDO: Icone SVG do skip-level-button
+            const nextLevelButton = !isLastLevelBlock ? `
+                <button class="skip-level-button text-lg px-8 py-3 w-full sm:w-auto" onclick="skipToNextLevel()">
+                    Skip to Next Level 
+                </button>
+            ` : '';
 
             quizContainer.innerHTML = `
                 <div id="quiz-content">
@@ -739,11 +834,15 @@
                     
                     ${scoringSection}
 
-                    <div id="quiz-nav" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        ${stopTestButton}
-                        <button class="action-button text-lg px-8 py-3" onclick="${nextFunction}" ${nextButtonDisabled}>
+                    <!-- REORGANIZAÇÃO: Ações secundárias à esquerda, Ação primária à direita -->
+                    <div id="quiz-nav" class="mt-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            ${stopTestButton}
+                            ${nextLevelButton}
+                        </div>
+                        <button class="action-button text-lg px-8 py-3 w-full sm:w-auto" onclick="${nextFunction}" ${nextButtonDisabled}>
                             ${buttonText} 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline ml-1"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
                     </div>
                 </div>`;
@@ -765,7 +864,12 @@
             criteriaDiv.querySelectorAll('.score-button').forEach(button => {
                 button.classList.remove('selected');
             });
+            // Adiciona seleção ao botão de pontuação clicado
             clickedButton.classList.add('selected');
+            
+            // Desabilita o botão Skip Question após a pontuação
+            const skipButton = document.getElementById('skip-q-button');
+            if (skipButton) { skipButton.disabled = true; }
             
             const allScored = questionData.scores[overallScoreKey] !== null;
             const nextButton = document.querySelector('#quiz-nav .action-button:not(.stop-test-button)'); 
@@ -972,10 +1076,15 @@
                  scoredQuestions.pop();
             }
 
-            const questionsAnswered = scoredQuestions.length;
+            // NOVO FILTRO: Remove questões que foram explicitamente puladas (-1)
+            const validScoredQuestions = scoredQuestions.filter(q => (q.scores[overallScoreKey] !== null && q.scores[overallScoreKey] !== -1)); 
+
+            const questionsAnswered = validScoredQuestions.length;
             
-            scoredQuestions.forEach(q => {
+            // Recalcula totalScore usando apenas validScoredQuestions
+            validScoredQuestions.forEach(q => {
                 const questionScore = q.scores[overallScoreKey] || 0;
+                // Como filtramos -1, podemos usar o score diretamente
                 totalScore += questionScore; 
             });
 
@@ -1004,7 +1113,7 @@
                  else { level = 'ACC (Advanced Conversation Class)'; message = 'Parabéns! O aluno tem domínio avançado (B2 High / C1+), conseguindo usar Mixed Conditionals, Reported Speech e vocabulário sofisticado (eufemismos). Indicado para o nível Advanced Conversation Class (ACC).'; } // Score 3.0
 
                  if (quickFinish && questionsAnswered < totalPossibleQuestions) {
-                    message = `⚠️ Teste interrompido após ${questionsAnswered} de ${totalPossibleQuestions} questões. A avaliação do nível foi feita com base nas respostas dadas. ${message}`;
+                    message = `⚠️ Teste interrompido após ${validScoredQuestions.length} questões avaliadas de ${totalPossibleQuestions} possíveis. A avaliação do nível foi feita com base nas respostas dadas. ${message}`;
                  }
             }
 
@@ -1022,9 +1131,12 @@
         window.showResult = function(quickFinish = false) {
             stopTimer(); // Stop the timer
             
-            // If not a quick finish, ensure the last question score is saved
-            if (!quickFinish && currentQuestionIndex < studentScores.length && studentScores[currentQuestionIndex].scores[overallScoreKey] === null) {
-                studentScores[currentQuestionIndex].scores[overallScoreKey] = 0; 
+            // If not a quick finish, ensure the last question score is saved (default to 0 if null, and not skipped)
+            if (!quickFinish && currentQuestionIndex < studentScores.length) {
+                const lastQuestion = studentScores[currentQuestionIndex];
+                if (lastQuestion.scores[overallScoreKey] === null) {
+                    lastQuestion.scores[overallScoreKey] = 0; 
+                }
             }
 
             const resultData = calculateLevel(quickFinish);
@@ -1040,9 +1152,9 @@
             
             let scoreText;
             if (resultData.answeredCount < resultData.totalPossible) {
-                scoreText = `Partial Score: ${resultData.score} of ${resultData.maxScore} pts evaluated (${resultData.answeredCount} questions)`;
+                scoreText = `Partial Score: ${resultData.score} of ${resultData.maxScore} pts evaluated (${resultData.answeredCount} questões válidas)`;
             } else {
-                 scoreText = `Total Score: ${resultData.score} of ${resultData.maxScore} pts (${resultData.answeredCount} questions)`;
+                 scoreText = `Total Score: ${resultData.score} of ${resultData.maxScore} pts (${resultData.answeredCount} questões válidas)`;
             }
             document.getElementById('result-score').textContent = scoreText;
 
