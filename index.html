@@ -19,6 +19,8 @@
         /* Aplicando a fonte padrão e cores do Hub Pedagógico */
         html, body {
             height: 100%;
+            /* CORREÇÃO: Remove barra de rolagem indesejada */
+            overflow: hidden;
         }
         body {
             font-family: 'DM Sans', sans-serif;
@@ -27,9 +29,14 @@
         }
         #app-container {
             flex: 1 0 auto;
+            /* Garante que o container ocupe toda a altura visível */
+            height: 100vh;
+            overflow: hidden; 
         }
         main {
             flex-shrink: 0;
+            height: 100%; /* Garante que o main ocupe toda a altura */
+            overflow: hidden;
         }
         
         /* Estilos específicos para Ecrãs de Apresentação Escuros */
@@ -40,7 +47,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; 
+            /* CORREÇÃO: Usa 100% da altura da viewport */
+            height: 100vh; 
             text-align: center;
             padding: 2rem;
             border-radius: 0.75rem;
@@ -53,6 +61,20 @@
             .full-width-desktop {
                 max-width: 80rem; /* max-w-7xl */
             }
+        }
+
+        /* Estilo para as caixas de conteúdo para forçar o scroll interno, se necessário */
+        .content-box {
+            /* Calcula a altura máxima dinamicamente, subtraindo padding/margin/header */
+            max-height: calc(100vh - 8rem); /* 100vh - (paddings + margins) */
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+        }
+        /* A cor de fundo principal da splash screen é o mesmo usado no .dark-splash */
+        .dark-splash.content-box {
+            background-color: #1c1917;
+            padding: 2rem;
         }
 
         
@@ -252,12 +274,12 @@
 </head>
 <body class="bg-stone-200 text-stone-800">
 
-    <main id="app-container" class="flex items-center justify-center p-4 sm:p-6 min-h-screen">
+    <main id="app-container" class="flex items-center justify-center p-4 sm:p-6">
         <!-- Aumenta a largura máxima para lg:max-w-7xl (80rem) -->
-        <div class="w-full max-w-3xl mx-auto lg:max-w-7xl">
+        <div class="w-full max-w-3xl mx-auto lg:max-w-7xl content-box">
         
             <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
-            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none lg:max-w-7xl">
+            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none lg:max-w-7xl content-box">
                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749349751/DBB440C2-684E-4DCF-9CD3-B2DDC18F1E53_3_vgocga.jpg" alt="SLAP Logo" class="w-32 h-auto mx-auto mb-6 sm:mb-8 rounded-lg">
                 <h1 class="text-4xl sm:text-5xl font-bold text-[#F1D24B] mb-6 sm:mb-8">
                     Placement Test Guide
@@ -275,7 +297,7 @@
             </div>
 
             <!-- SPLASH SCREEN 2: CONFIRMATION -->
-            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none lg:max-w-7xl">
+            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none lg:max-w-7xl content-box">
                  <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
                 <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg">
                     Teacher, o aluno está preparado para iniciar o teste?
@@ -288,7 +310,7 @@
             <!-- Quiz View (NOVO LAYOUT DE AVALIAÇÃO ORAL) -->
             <div id="quiz-view" class="hidden">
                  <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
-                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto">
+                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto content-box">
                     <!-- Quiz content will be injected here by JS -->
                  </div>
             </div>
@@ -296,7 +318,7 @@
             <!-- GRAMMAR GRID VIEW (NOVO LAYOUT DE CARTÕES/GRID) -->
             <div id="grammar-grid-view" class="hidden">
                 <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto">
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto content-box">
                     <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
                     <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
                     
@@ -323,7 +345,7 @@
             <!-- RESULTADO FINAL -->
             <div id="result-view" class="hidden">
                 <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
-                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center w-full lg:max-w-7xl mx-auto">
+                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center w-full lg:max-w-7xl mx-auto content-box">
                     <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6">
                     <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
                     <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
@@ -608,6 +630,60 @@
             displayQuestion();
         }
 
+        // Helper function to find the starting index of the next level
+        function findNextLevelIndex(currentLevel) {
+            let foundCurrent = false;
+            let nextLevelIndex = -1;
+            
+            for (let i = 0; i < oralPrompts.length; i++) {
+                if (oralPrompts[i].level === currentLevel) {
+                    foundCurrent = true;
+                } else if (foundCurrent && oralPrompts[i].level !== currentLevel) {
+                    // Found the start of the next different level
+                    nextLevelIndex = i;
+                    break;
+                }
+            }
+            // If we finish the loop, the next index is the end (which will trigger showResult)
+            return nextLevelIndex !== -1 ? nextLevelIndex : oralPrompts.length - 1;
+        }
+
+        // Function to handle skipping to the next level
+        window.skipToNextLevel = function() {
+            const currentLevel = studentScores[currentQuestionIndex].level;
+            const nextLevelIndex = findNextLevelIndex(currentLevel);
+            
+            // Score all questions from current index up to (but not including) nextLevelIndex as 3 (Strong)
+            for (let i = currentQuestionIndex; i < nextLevelIndex; i++) {
+                // Only score if not already scored (should be null, but safe check)
+                if (studentScores[i].scores[overallScoreKey] === null) {
+                    studentScores[i].scores[overallScoreKey] = 3;
+                }
+            }
+            
+            // Move the current question index to the start of the next level
+            currentQuestionIndex = nextLevelIndex;
+            
+            // If we reached the end, show result, otherwise display next question
+            if (currentQuestionIndex >= studentScores.length - 1) {
+                showResult();
+            } else {
+                displayQuestion();
+            }
+        }
+
+
+        window.skipQuestion = function() {
+            // Check if the current question has NOT been scored (if scored, use nextQuestion instead)
+            if (studentScores[currentQuestionIndex].scores[overallScoreKey] === null) {
+                // Set score to 0 for "Didn't Answer" but we need to advance the index
+                 studentScores[currentQuestionIndex].scores[overallScoreKey] = 0; 
+            }
+            // Advance to the next question
+            nextQuestion();
+        }
+
+
         function displayQuestion() {
             const quizContainer = quizView.querySelector('.bg-white');
             if (currentQuestionIndex >= studentScores.length) {
@@ -653,10 +729,8 @@
                 </div>
             `;
 
-
-            // Check if overall score was given to enable the next button
-            const scoredOrLastPrompt = isLastPrompt || questionData.scores[overallScoreKey] !== null;
-            const nextButtonDisabled = scoredOrLastPrompt ? '' : 'disabled';
+            // Navigation Buttons (Next/Skip)
+            const nextButtonDisabled = (isLastPrompt || questionData.scores[overallScoreKey] !== null) ? '' : 'disabled';
             const buttonText = isLastPrompt ? "Finish Test and Generate Level" : ((currentQuestionIndex < totalQuestions - 1) ? "Next Question" : "Finish Test");
             const nextFunction = (currentQuestionIndex < totalQuestions - 1) ? "nextQuestion()" : "showResult()";
             
@@ -665,6 +739,16 @@
                     End Test Here and View Result
                 </button>
             `;
+            
+            // Check the level of the next question
+            const nextLevelIndex = findNextLevelIndex(questionData.level);
+            const isLastLevel = nextLevelIndex === oralPrompts.length - 1;
+            const nextLevelButton = isLastPrompt || isLastLevel ? '' : `
+                <button class="action-button bg-indigo-600 text-white hover:bg-indigo-700 text-sm px-4 py-2 w-full" onclick="skipToNextLevel()">
+                    Skip to Next Level (${oralPrompts[nextLevelIndex].level})
+                </button>
+            `;
+
 
             quizContainer.innerHTML = `
                 <div id="quiz-content">
@@ -697,8 +781,15 @@
                     ${scoringSection}
 
                     <div id="quiz-nav" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        ${stopTestButton}
-                        <button class="action-button text-lg px-8 py-3" onclick="${nextFunction}" ${nextButtonDisabled}>
+                        <div class="flex flex-col gap-2 w-full sm:w-auto">
+                            ${stopTestButton}
+                            ${nextLevelButton}
+                            <button class="action-button bg-stone-500 text-white hover:bg-stone-600 text-sm px-4 py-2 w-full" onclick="skipQuestion()">
+                                Skip Question (No Score)
+                            </button>
+                        </div>
+                        
+                        <button class="action-button text-lg px-8 py-3 w-full sm:w-auto" onclick="${nextFunction}" ${nextButtonDisabled}>
                             ${buttonText} 
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
@@ -725,7 +816,7 @@
             clickedButton.classList.add('selected');
             
             const allScored = questionData.scores[overallScoreKey] !== null;
-            const nextButton = document.querySelector('#quiz-nav .action-button:not(.stop-test-button)'); 
+            const nextButton = document.querySelector('#quiz-nav .action-button:not(.stop-test-button):not(.bg-indigo-600):not(.bg-stone-500)'); 
             if (nextButton) {
                 nextButton.disabled = !allScored;
             }
