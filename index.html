@@ -37,6 +37,15 @@
             overflow: hidden;
         }
         
+        /* Estilos Padrão para TODOS os Containers de Visualização (Quiz/Grammar/Result/Splash) */
+        .standard-container {
+            /* Garante o tamanho máximo e evita scroll principal */
+            max-height: 90vh; 
+            width: 100%;
+            /* NOVO: Largura ampla para desktop (max-w-7xl) */
+            max-width: 1280px; 
+        }
+
         /* Estilos específicos para Ecrãs de Apresentação Escuros (Splash Screens) */
         .dark-splash {
             background-color: #1c1917; /* stone-900 */
@@ -45,25 +54,17 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* NOVO: Usa max-height para caber no ecrã e um max-width razoável */
-            max-height: 90vh; 
-            max-width: 42rem; 
-            height: 100%; /* Ocupa a altura máxima permitida pelo max-height */
-            width: 100%;
+            
+            /* ESSENCIAL: Garante que ocupe 100% do standard-container (90vh) */
+            height: 100%; 
+            width: 100%; /* Garante a largura total do standard-container (1280px) */
+
             text-align: center;
             padding: 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
         }
         
-        /* Estilos para a caixa principal do Quiz/Grammar/Result */
-        .quiz-container-wrapper {
-            /* NOVO: Define a largura e altura MÁXIMAS para caber no ecrã (90% VH) */
-            max-height: 90vh; 
-            width: 100%;
-            max-width: 1280px; /* Limite prático de largura no desktop */
-        }
-
         /* Estilo para a caixa principal do Quiz/Grammar/Result */
         .quiz-card {
             background-color: #ffffff;
@@ -72,10 +73,10 @@
             border: 1px solid #e7e5e4;
             display: flex;
             flex-direction: column;
-            height: 100%; /* Ocupa 100% da altura do wrapper (90vh) */
+            height: 100%; /* Ocupa 100% da altura do wrapper */
         }
 
-        /* Aplica scroll interno ao conteúdo que pode transbordar */
+        /* Aplica scroll interno SOMENTE onde necessário (Grammar Grid) */
         .scrollable-content {
             flex-grow: 1; /* Permite que o conteúdo cresça */
             overflow-y: auto;
@@ -101,7 +102,7 @@
              text-decoration: none;
              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .action-button:hover:not(:disabled) {
+        .action-button:hover:not(.disabled) {
             background-color: #eab308; /* Darker yellow */
             transform: translateY(-2px);
         }
@@ -284,8 +285,8 @@
         <!-- O contentor principal agora usa flex para que o item interno ocupe 100% da altura e a largura máxima no desktop -->
         <div class="w-full max-w-full mx-auto h-full flex flex-col justify-center items-center">
             
-            <!-- Wrapper que define o limite de tamanho -->
-            <div class="quiz-container-wrapper mx-auto">
+            <!-- Wrapper que define o limite de tamanho (Padronizado para todos os views) -->
+            <div class="standard-container mx-auto">
         
                 <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
                 <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none">
@@ -295,9 +296,9 @@
                     </h1>
                     <p class="text-lg text-stone-400 mb-4">Acesso Exclusivo para Professores.</p>
                     
-                    <div class="w-full max-w-sm">
+                    <!-- Container interno para garantir que o splash screen fique amplo como o quiz -->
+                    <div class="w-full max-w-md"> 
                         <input type="password" id="password-input" class="input-field mb-4" placeholder="Enter Secret Password" required>
-                        <!-- O botão já está com display: inline-flex e justify-content: center no CSS para centralizar -->
                         <button class="action-button bg-[#F1D24B] text-stone-900 text-xl px-12 py-4 w-full" onclick="checkPassword()">
                             Acessar Guia
                         </button>
@@ -341,11 +342,12 @@
                             </div>
                         </div>
                         
-                        <div id="quiz-content-area" class="p-6 sm:p-8 pt-0 scrollable-content flex flex-col flex-grow">
+                        <!-- Conteúdo da pergunta e critérios (Sem rolagem interna) -->
+                        <div id="quiz-content-area" class="p-6 sm:p-8 pt-0 flex flex-col flex-grow">
                             <!-- Conteúdo do quiz será injetado aqui pelo JS, incluindo prompt e criteria -->
                         </div>
 
-                        <div id="quiz-nav-placeholder" class="p-6 sm:p-8 pt-0 flex-shrink-0">
+                        <div id="quiz-nav-placeholder" class="p-6 sm:p-8 pt-0 flex-shrink-0 border-t border-stone-200">
                             <!-- Botões de navegação serão injetados aqui pelo JS -->
                         </div>
                     </div>
@@ -384,7 +386,8 @@
                 <div id="result-view" class="hidden h-full flex flex-col">
                     <div class="quiz-card w-full mx-auto p-8 text-center flex flex-col overflow-hidden">
                         <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6 flex-shrink-0">
-                        <div class="scrollable-content pt-0 flex flex-col justify-center">
+                        <!-- NOVO: Rolagem controlada no resultado se o texto for muito longo -->
+                        <div class="overflow-y-auto pt-0 flex flex-col justify-center flex-grow">
                             <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
                             <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
                             <p id="result-score" class="text-xl text-stone-600 mb-4 font-semibold"></p>
@@ -819,10 +822,10 @@
                  `;
             }
 
-            // Update Scrollable Content Area
+            // Update Content Area
             quizContentArea.innerHTML = `
                 <!-- Prompt for the Teacher (text in Portuguese as requested) -->
-                <div class="p-6 bg-indigo-50 rounded-xl mb-6">
+                <div class="p-6 bg-indigo-50 rounded-xl mb-6 flex-shrink-0">
                     <p class="text-sm font-semibold text-indigo-600 mb-2">PROMPT ORAL (Professor pergunta):</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-indigo-800">${questionData.prompt}</h3>
                 </div>
