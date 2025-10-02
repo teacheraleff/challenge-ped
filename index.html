@@ -45,8 +45,16 @@
             padding: 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            max-width: 42rem;
+            /* NOVO: max-w-7xl para desktop */
+            max-width: 42rem; /* Default/sm/md */
         }
+        /* Ajusta o max-width para desktop (lg) */
+        @media (min-width: 1024px) {
+            .full-width-desktop {
+                max-width: 80rem; /* max-w-7xl */
+            }
+        }
+
         
         /* Estilos do Botão de Ação */
         .action-button {
@@ -245,10 +253,11 @@
 <body class="bg-stone-200 text-stone-800">
 
     <main id="app-container" class="flex items-center justify-center p-4 sm:p-6 min-h-screen">
-        <div class="w-full max-w-3xl mx-auto">
+        <!-- Aumenta a largura máxima para lg:max-w-7xl (80rem) -->
+        <div class="w-full max-w-3xl mx-auto lg:max-w-7xl">
         
             <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
-            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none">
+            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none lg:max-w-7xl">
                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749349751/DBB440C2-684E-4DCF-9CD3-B2DDC18F1E53_3_vgocga.jpg" alt="SLAP Logo" class="w-32 h-auto mx-auto mb-6 sm:mb-8 rounded-lg">
                 <h1 class="text-4xl sm:text-5xl font-bold text-[#F1D24B] mb-6 sm:mb-8">
                     Placement Test Guide
@@ -266,7 +275,7 @@
             </div>
 
             <!-- SPLASH SCREEN 2: CONFIRMATION -->
-            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none">
+            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none lg:max-w-7xl">
                  <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
                 <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg">
                     Teacher, o aluno está preparado para iniciar o teste?
@@ -278,14 +287,16 @@
 
             <!-- Quiz View (NOVO LAYOUT DE AVALIAÇÃO ORAL) -->
             <div id="quiz-view" class="hidden">
-                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full">
+                 <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
+                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto">
                     <!-- Quiz content will be injected here by JS -->
                  </div>
             </div>
             
             <!-- GRAMMAR GRID VIEW (NOVO LAYOUT DE CARTÕES/GRID) -->
             <div id="grammar-grid-view" class="hidden">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full">
+                <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto">
                     <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
                     <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
                     
@@ -311,7 +322,8 @@
 
             <!-- RESULTADO FINAL -->
             <div id="result-view" class="hidden">
-                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center">
+                <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
+                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center w-full lg:max-w-7xl mx-auto">
                     <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6">
                     <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
                     <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
@@ -372,7 +384,7 @@
             { 
                 value: 1, 
                 label: 'Weak Answer', 
-                icon: '<svg class="score-icon text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 18.0001L2.99974 5.0001H20.9997L11.9997 18.0001Z" transform="rotate(180 11.9997 11.5001)"/></svg>',
+                icon: '<svg class="score-icon text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 18.0001L2.99974 5.0001H20.9997L11.9997 18.0001L11.9997 18.0001Z" transform="rotate(180 11.9997 11.5001)"/></svg>',
                 desc: '1 pt - Resposta fraca, uso incorreto ou falta de vocabulário básico.' 
             },    
             { 
@@ -486,7 +498,7 @@
         
         // Ícones para o Grammar Grid (Weak, Medium, Strong)
         const grammarIcons = {
-            1: '<svg class="grammar-icon text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 18.0001L2.99974 5.0001H20.9997L11.9997 18.0001Z" transform="rotate(180 11.9997 11.5001)"/></svg>', // Down Arrow
+            1: '<svg class="grammar-icon text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 18.0001L2.99974 5.0001H20.9997L11.9997 18.0001L11.9997 18.0001Z" transform="rotate(180 11.9997 11.5001)"/></svg>', // Down Arrow
             2: '<svg class="grammar-icon text-yellow-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>', // Circle
             3: '<svg class="grammar-icon text-green-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"/></svg>' // Star
         };
@@ -880,7 +892,7 @@
                  grammarLevel = 'Freshman 1 (A2) - (Needs practice on Simple Tenses)';
             } 
             // Sophomore 1 -> Freshman 2: Se domina Passado (3), mas não Comparatives/Superlatives (<= 1)
-            else if (grammarLevel === 'Sophomore 1 (B1)' && scores['Superlatives & Comparatives'] <= 1) {
+            else if (grammarLevel === 'Sophomore 1 (B1)' && scores['Simple Past / Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] <= 1) {
                 grammarLevel = 'Freshman 2 (A2+) - (Needs strong focus on Comparatives/Superlatives)';
             }
 
