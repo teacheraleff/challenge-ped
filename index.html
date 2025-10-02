@@ -20,6 +20,7 @@
         html, body {
             height: 100%;
         }
+        /* MUDANÇA: Fundo principal agora é branco */
         body {
             font-family: 'DM Sans', sans-serif;
             display: flex;
@@ -32,7 +33,7 @@
             flex-shrink: 0;
         }
         
-        /* Estilos específicos para Ecrãs de Apresentação Escuros */
+        /* Estilos específicos para Ecrãs de Apresentação Escuros (Splash Screens) */
         .dark-splash {
             background-color: #1c1917; /* stone-900 */
             color: #f5f5f4; /* stone-100 */
@@ -43,11 +44,20 @@
             min-height: 100vh; 
             text-align: center;
             padding: 2rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            max-width: 42rem;
+            /* CORREÇÃO: Força a largura máxima para 100% da viewport e centraliza o conteúdo */
+            width: 100vw; 
+            max-width: 100vw;
+            position: fixed; /* Fixa o splash no ecrã para cobrir tudo */
+            top: 0;
+            left: 0;
         }
-        
+        /* Conteúdo interno da splash screen para limitar o texto */
+        .dark-splash > div {
+            max-width: 42rem;
+            width: 100%;
+            margin: 0 auto;
+        }
+
         /* Estilos do Botão de Ação */
         .action-button {
              background-color: #F1D24B; 
@@ -129,9 +139,11 @@
             border-color: #EAB308;
             color: #1c1917;
         }
-        .score-button:hover:not(.selected) {
+        /* REMOVIDO: Hover effect para que a cor só mude ao clicar/selecionar */
+        /* .score-button:hover:not(.selected) {
             background-color: #fceb9e;
-        }
+        } */
+        
         /* Mapeamento de cores para os 4 critérios */
         .score-button.score-0 { background-color: #fca5a5; color: #991B1B; } /* Red for 0 (Didn't Answer) */
         .score-button.score-1 { background-color: #FEE2E2; color: #991B1B; } /* Light Red for 1 (Weak Answer) */
@@ -140,10 +152,11 @@
 
         /* Estilo para a caixa de critérios */
         .criteria-box {
-            background-color: #f5f5f4; /* stone-100 */
+            background-color: #fefefe; /* Branco muito leve, mantém o destaque sobre o fundo agora branco */
             padding: 1.5rem;
             border-radius: 0.75rem;
             border: 1px solid #e7e5e4;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* Sombra muito suave */
         }
         /* NOVO ESTILO: Botão de Parar Teste usando base do action-button */
         .stop-test-button {
@@ -182,13 +195,13 @@
         }
         
         .grammar-card {
-            background-color: #ffffff;
+            background-color: #fefefe; /* Branco muito leve para cards de gramática */
             border: 1px solid #e7e5e4;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            height: 100%; /* Garante que os cartões na grelha tenham altura uniforme */
+            height: 100%; 
         }
         .grammar-topic-header {
             background-color: #f5f5f4; /* stone-100 */
@@ -198,7 +211,7 @@
             color: #44403c;
             border-top-left-radius: 0.75rem;
             border-top-right-radius: 0.75rem;
-            flex-grow: 1; /* Permite que o cabeçalho se expanda se o texto for maior */
+            flex-grow: 1; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -215,19 +228,19 @@
             align-items: center;
             justify-content: center;
             padding: 0.5rem 0.25rem;
-            border-radius: 0.5rem; /* Menos arredondado para pills */
+            border-radius: 0.5rem; 
             cursor: pointer;
             transition: background-color 0.2s, border-color 0.2s;
             border: 2px solid transparent;
-            min-width: 30%; /* Ocupa 1/3 do espaço disponível no container flex */
+            min-width: 30%; 
             font-size: 0.875rem;
             font-weight: 500;
         }
 
         /* Cores das Pills */
-        .grammar-pill[data-score="1"] { background-color: #fee2e2; color: #991B1B; } /* Red (Weak) */
-        .grammar-pill[data-score="2"] { background-color: #fffbe9; color: #92400E; } /* Yellow (Medium) */
-        .grammar-pill[data-score="3"] { background-color: #d1fae5; color: #065F46; } /* Green (Strong) */
+        .grammar-pill[data-score="1"] { background-color: #fee2e2; color: #991B1B; } 
+        .grammar-pill[data-score="2"] { background-color: #fffbe9; color: #92400E; } 
+        .grammar-pill[data-score="3"] { background-color: #d1fae5; color: #065F46; } 
 
         /* Seleção das Pills */
         .grammar-pill.selected-1 { border-color: #ef4444; background-color: #fca5a5; }
@@ -240,99 +253,115 @@
             margin-bottom: 4px;
         }
 
+        /* Estilo para as caixas de destaque de cor amarela/índigo (mantidas) */
+        .highlight-box-yellow {
+            background-color: #F1D24B;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+        .highlight-box-indigo {
+             background-color: #eef2ff; /* indigo-50 */
+             border-radius: 0.75rem;
+             padding: 1.5rem;
+        }
+
     </style>
 </head>
-<body class="bg-stone-200 text-stone-800">
+<body class="bg-white text-stone-800"> <!-- MUDANÇA: Fundo do Body agora é branco (bg-white) -->
 
-    <main id="app-container" class="flex items-center justify-center p-4 sm:p-6 min-h-screen">
-        <div class="w-full max-w-3xl mx-auto">
+    <main id="app-container" class="flex items-center justify-center p-0 sm:p-0 min-h-screen w-full">
         
-            <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
-            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none">
+        <!-- SPLASH SCREEN 1: PASSWORD LOGIN (DARK BACKGROUND) -->
+        <div id="splash-1-view" class="dark-splash shadow-none">
+            <!-- Conteúdo da Splash, limitado pelo .dark-splash > div no CSS -->
+            <div>
                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749349751/DBB440C2-684E-4DCF-9CD3-B2DDC18F1E53_3_vgocga.jpg" alt="SLAP Logo" class="w-32 h-auto mx-auto mb-6 sm:mb-8 rounded-lg">
                 <h1 class="text-4xl sm:text-5xl font-bold text-[#F1D24B] mb-6 sm:mb-8">
                     Placement Test Guide
                 </h1>
                 <p class="text-lg text-stone-400 mb-4">Acesso Exclusivo para Professores.</p>
                 
-                <div class="w-full max-w-sm">
+                <!-- CORREÇÃO: Adicionado mx-auto para centralizar o bloco de senha/botão -->
+                <div class="w-full max-w-sm mx-auto"> 
                     <input type="password" id="password-input" class="input-field mb-4" placeholder="Enter Secret Password" required>
-                    <!-- O botão já está com display: inline-flex e justify-content: center no CSS para centralizar -->
                     <button class="action-button bg-[#F1D24B] text-stone-900 text-xl px-12 py-4 w-full" onclick="checkPassword()">
                         Acessar Guia
                     </button>
                     <p id="password-error" class="text-red-400 mt-3 hidden">Incorrect password. Please try again.</p>
                 </div>
             </div>
+        </div>
 
-            <!-- SPLASH SCREEN 2: CONFIRMATION -->
-            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none">
+        <!-- SPLASH SCREEN 2: CONFIRMATION (DARK BACKGROUND) -->
+        <div id="splash-2-view" class="dark-splash hidden shadow-none">
+            <div>
                  <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
-                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg mx-auto">
                     Teacher, o aluno está preparado para iniciar o teste?
                 </h2>
-                <button class="action-button bg-stone-100 text-stone-900 text-lg px-10 py-3" onclick="startQuiz()">
+                <!-- CORREÇÃO: Adicionado block mx-auto para centralizar o botão Start Test! -->
+                <button class="action-button bg-stone-100 text-stone-900 text-lg px-10 py-3 block mx-auto" onclick="startQuiz()">
                     Start Test!
                 </button>
             </div>
+        </div>
 
-            <!-- Quiz View (NOVO LAYOUT DE AVALIAÇÃO ORAL) -->
-            <div id="quiz-view" class="hidden">
-                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full">
+        <!-- NOVO WRAPPER PARA CONTEÚDO CLARO (Mantém a limitação de largura e centralização) -->
+        <div id="light-content-wrapper" class="w-full max-w-3xl mx-auto">
+        
+            <!-- Quiz View (LIGHT BACKGROUND) -->
+            <div id="quiz-view" class="hidden w-full">
+                 <!-- Wrapper mantido com ID, agora se mistura com o fundo branco -->
+                 <div id="quiz-content-wrapper" class="p-6 sm:p-8 rounded-xl w-full"> 
                     <!-- Quiz content will be injected here by JS -->
                  </div>
             </div>
             
-            <!-- GRAMMAR GRID VIEW (NOVO LAYOUT DE CARTÕES/GRID) -->
-            <div id="grammar-grid-view" class="hidden">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full">
-                    <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
-                    <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
-                    
-                    <!-- NOVO CONTAINER COM GRID RESPONSIVO -->
-                    <div id="grammar-cards-container" class="grammar-grid-container">
-                        <!-- Grammar topics will be injected here by JS -->
-                    </div>
-                    
-                    <div id="grammar-grid-result" class="hidden my-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-[#F1D24B]">
-                        <p class="font-bold text-stone-800">Grammar Grid Result: <span id="grammar-level" class="text-xl font-extrabold text-[#1c1917]"></span></p>
-                        <p id="grammar-score" class="text-sm text-stone-600"></p>
-                    </div>
+            <!-- GRAMMAR GRID VIEW (LIGHT BACKGROUND) -->
+            <div id="grammar-grid-view" class="hidden w-full p-6 sm:p-8">
+                <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
+                <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
+                
+                <!-- NOVO CONTAINER COM GRID RESPONSIVO -->
+                <div id="grammar-cards-container" class="grammar-grid-container">
+                    <!-- Grammar topics will be injected here by JS -->
+                </div>
+                
+                <div id="grammar-grid-result" class="hidden my-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-[#F1D24B]">
+                    <p class="font-bold text-stone-800">Grammar Grid Result: <span id="grammar-level" class="text-xl font-extrabold text-[#1c1917]"></span></p>
+                    <p id="grammar-score" class="text-sm text-stone-600"></p>
+                </div>
 
-                    <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8 w-full">
-                        <button onclick="goToResultView()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2">Back to Test Result</button>
-                        <button id="submit-grammar-grid" onclick="submitGrammarGrid()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2" disabled>
-                            Submit & Calculate Grammar Level
-                        </button>
-                    </div>
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8 w-full">
+                    <button onclick="goToResultView()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2">Back to Test Result</button>
+                    <button id="submit-grammar-grid" onclick="submitGrammarGrid()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2" disabled>
+                        Submit & Calculate Grammar Level
+                    </button>
                 </div>
             </div>
 
 
-            <!-- RESULTADO FINAL -->
-            <div id="result-view" class="hidden">
-                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center">
-                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6">
-                    <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
-                    <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
-                    <p id="result-score" class="text-xl text-stone-600 mb-4 font-semibold"></p>
-                    
-                    <div class="my-6 p-6 bg-[#F1D24B] rounded-lg">
-                        <p class="text-2xl font-bold text-stone-900 mb-2">Estimated Level (Oral Test)</p>
-                        <p id="result-level" class="text-5xl font-extrabold text-stone-900 mb-2"></p>
-                    </div>
-                    
-                    <p id="result-message" class="text-stone-700 max-w-md mx-auto"></p>
+            <!-- RESULTADO FINAL (LIGHT BACKGROUND) -->
+            <div id="result-view" class="hidden w-full p-8 text-center">
+                <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6">
+                <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
+                <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
+                <p id="result-score" class="text-xl text-stone-600 mb-4 font-semibold"></p>
+                
+                <div class="my-6 highlight-box-yellow">
+                    <p class="text-2xl font-bold text-stone-900 mb-2">Estimated Level (Oral Test)</p>
+                    <p id="result-level" class="text-5xl font-extrabold text-stone-900 mb-2"></p>
+                </div>
+                
+                <p id="result-message" class="text-stone-700 max-w-md mx-auto"></p>
 
-                    <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                         <button onclick="restartQuiz()" class="action-button text-lg px-8 py-3 bg-stone-800 text-white hover:bg-stone-900">
-                             Restart Test
-                         </button>
-                         <button onclick="goToGrammarGrid()" class="action-button text-lg px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700">
-                             Grammar Grid
-                         </button>
-                    </div>
-
+                <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                     <button onclick="restartQuiz()" class="action-button text-lg px-8 py-3 bg-stone-800 text-white hover:bg-stone-900">
+                         Restart Test
+                     </button>
+                     <button onclick="goToGrammarGrid()" class="action-button text-lg px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700">
+                         Grammar Grid
+                     </button>
                 </div>
             </div>
         </div>
@@ -344,6 +373,9 @@
         const splash1View = document.getElementById('splash-1-view');
         const splash2View = document.getElementById('splash-2-view');
         const quizView = document.getElementById('quiz-view');
+        const lightContentWrapper = document.getElementById('light-content-wrapper'); // NOVO: Wrapper para conteúdo claro
+        // Elemento para injetar o conteúdo
+        const quizContentWrapper = document.getElementById('quiz-content-wrapper'); 
         const resultView = document.getElementById('result-view');
         const grammarGridView = document.getElementById('grammar-grid-view');
         
@@ -366,7 +398,7 @@
             { 
                 value: 0, 
                 label: 'Didn\'t Answer', 
-                icon: '<svg class="score-icon text-red-700" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6" /></svg>', 
+                icon: '<svg class="score-icon text-red-700" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>', 
                 desc: '0 pt - O aluno não respondeu ou não conseguiu articular a resposta.' 
             }, 
             { 
@@ -465,22 +497,36 @@
             { level: 'ACC', prompt: "Caso o prospect consiga responder todas as perguntas bem, ele está indicado para o nível ACC. (Este prompt serve apenas como lembrete final.)" }
         ];
 
-        // Gramáticas baseadas na progressão do usuário (10 TÓPICOS)
+        // Gramáticas baseadas na progressão do usuário (14 TÓPICOS AGORA)
         const grammarTopics = [
-            // Starter 1
+            // Starter 1 (Pré-A1) - 1 Topic
             { topic: "Verb To Be", minLevel: 'Starter 1 (Pré-A1)' },
-            { topic: "Simple Present / Future Tenses (Will, Going To)", minLevel: 'Starter 2 (A1)' },
+
+            // Starter 2 (A1) - 3 Topics
+            { topic: "Simple Present", minLevel: 'Starter 2 (A1)' },
+            { topic: "Future Tenses (Will/Going To)", minLevel: 'Starter 2 (A1)' },
             { topic: "Present Continuous", minLevel: 'Starter 2 (A1)' }, 
-            // Freshman 2
-            { topic: "Simple Past / Past Continuous", minLevel: 'Freshman 2 (A2+)' },
+
+            // Freshman 2 (A2+) - 3 Topics
+            { topic: "Simple Past", minLevel: 'Freshman 2 (A2+)' },
+            { topic: "Past Continuous", minLevel: 'Freshman 2 (A2+)' },
             { topic: "Superlatives & Comparatives", minLevel: 'Freshman 2 (A2+)' },
-            // Sophomore 2
+
+            // Sophomore 2 (B1+) - 1 Topic
             { topic: "Present Perfect", minLevel: 'Sophomore 2 (B1+)' },
+            
+            // Junior 1 (B1+/B2 low) - 1 Topic
             { topic: "Conditionals (Zero, First, Second)", minLevel: 'Junior 1 (B1+/B2 low)' },
-            // Junior 2
-            { topic: "Would / Past Perfect", minLevel: 'Junior 2 (B2 low)' },
-            // Senior
-            { topic: "Modal Verbs (Complex) / Reported Speech", minLevel: 'Senior 1 (B2)' },
+
+            // Junior 2 (B2 low) - 2 Topics
+            { topic: "Would (Conditionals/Habits)", minLevel: 'Junior 2 (B2 low)' },
+            { topic: "Past Perfect", minLevel: 'Junior 2 (B2 low)' },
+
+            // Senior 1 (B2) - 2 Topics
+            { topic: "Complex Modal Verbs", minLevel: 'Senior 1 (B2)' },
+            { topic: "Reported Speech", minLevel: 'Senior 1 (B2)' },
+
+            // Senior 2 (B2 High) - 1 Topic
             { topic: "Mixed Conditionals / Euphemisms", minLevel: 'Senior 2 (B2 High)' },
         ];
         
@@ -530,9 +576,8 @@
         function hideAllViews() {
             splash1View.classList.add('hidden');
             splash2View.classList.add('hidden');
-            quizView.classList.add('hidden');
-            resultView.classList.add('hidden');
-            grammarGridView.classList.add('hidden');
+            // NOVO: Esconde o wrapper que contém as views claras
+            lightContentWrapper.classList.add('hidden'); 
         }
 
         function startSplash1() {
@@ -561,12 +606,18 @@
         
         window.goToResultView = function() {
             hideAllViews();
+            lightContentWrapper.classList.remove('hidden'); // Mostra o wrapper central
             resultView.classList.remove('hidden');
+            quizView.classList.add('hidden');
+            grammarGridView.classList.add('hidden');
         }
 
         window.goToGrammarGrid = function() {
             hideAllViews();
+            lightContentWrapper.classList.remove('hidden'); // Mostra o wrapper central
             grammarGridView.classList.remove('hidden');
+            quizView.classList.add('hidden');
+            resultView.classList.add('hidden');
             renderGrammarGrid();
         }
         
@@ -574,6 +625,7 @@
 
         function startQuiz() {
             hideAllViews();
+            lightContentWrapper.classList.remove('hidden'); // Mostra o wrapper central
             quizView.classList.remove('hidden');
             
             currentQuestionIndex = 0;
@@ -597,7 +649,8 @@
         }
 
         function displayQuestion() {
-            const quizContainer = quizView.querySelector('.bg-white');
+            // Alterado para injetar o conteúdo diretamente no wrapper da quiz view
+            const quizContainer = quizContentWrapper; 
             if (currentQuestionIndex >= studentScores.length) {
                 // If the end of the quiz is reached (passed the last ACC prompt), show the result
                 showResult();
@@ -615,6 +668,7 @@
             // Render score buttons with SVGs
             const scoreButtons = scoreValues.map(score => {
                 const isSelected = currentScore === score.value;
+                // CORREÇÃO: Removido sm:justify-start de #overall-criteria (abaixo) para manter centralizado
                 const buttonClasses = `score-button score-${score.value} ${isSelected ? 'selected' : ''}`; 
                 return `<button class="${buttonClasses}" onclick="setOverallScore(${score.value}, this)">
                             ${score.icon}
@@ -623,9 +677,9 @@
             }).join('');
 
             const criteriaHtml = `
-                <div class="mb-4">
+                <div class="mb-4 text-center">
                     <p class="font-bold text-stone-700 mb-2">Overall Answer Score</p>
-                    <div id="overall-criteria" class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <div id="overall-criteria" class="flex flex-wrap gap-2 justify-center">
                         ${scoreButtons}
                     </div>
                 </div>
@@ -634,9 +688,10 @@
             // Hide scoring buttons for the last prompt (ACC, which is only informational)
             const isLastPrompt = currentQuestionIndex === totalQuestions - 1;
             const scoringSection = isLastPrompt ? '' : `
-                <!-- Criteria Box -->
+                <!-- Criteria Box (MANTIDO PARA DESTAQUE INTERNO) -->
                 <div class="criteria-box">
-                    <h4 class="text-xl font-bold text-stone-800 mb-4 border-b pb-2">Student Answer Evaluation</h4>
+                    <!-- CORREÇÃO: Adicionado text-center ao h4 -->
+                    <h4 class="text-xl font-bold text-stone-800 mb-4 border-b pb-2 text-center">Student Answer Evaluation</h4>
                     ${criteriaHtml}
                 </div>
             `;
@@ -677,7 +732,7 @@
                      </div>
                     
                     <!-- Prompt for the Teacher (text in Portuguese as requested) -->
-                    <div class="p-6 bg-indigo-50 rounded-xl mb-6">
+                    <div class="p-6 highlight-box-indigo mb-6">
                         <p class="text-sm font-semibold text-indigo-600 mb-2">PROMPT ORAL (Professor pergunta):</p>
                         <h3 class="text-xl sm:text-2xl font-bold text-indigo-800">${questionData.prompt}</h3>
                     </div>
@@ -802,81 +857,85 @@
         window.submitGrammarGrid = function() {
             if (!checkGrammarGridCompletion()) return;
 
-            // Mapeamento dos 10 tópicos
+            // Mapeamento dos 14 tópicos (Atualizado)
             const scores = {
                 'Verb To Be': grammarScores['Verb To Be'] || 0,
-                'Simple Present / Future Tenses (Will, Going To)': grammarScores['Simple Present / Future Tenses (Will, Going To)'] || 0,
+                'Simple Present': grammarScores['Simple Present'] || 0,
+                'Future Tenses (Will/Going To)': grammarScores['Future Tenses (Will/Going To)'] || 0,
                 'Present Continuous': grammarScores['Present Continuous'] || 0,
-                'Simple Past / Past Continuous': grammarScores['Simple Past / Past Continuous'] || 0,
+                'Simple Past': grammarScores['Simple Past'] || 0,
+                'Past Continuous': grammarScores['Past Continuous'] || 0,
                 'Superlatives & Comparatives': grammarScores['Superlatives & Comparatives'] || 0,
                 'Present Perfect': grammarScores['Present Perfect'] || 0,
                 'Conditionals (Zero, First, Second)': grammarScores['Conditionals (Zero, First, Second)'] || 0,
-                'Would / Past Perfect': grammarScores['Would / Past Perfect'] || 0,
-                'Modal Verbs (Complex) / Reported Speech': grammarScores['Modal Verbs (Complex) / Reported Speech'] || 0,
+                'Would (Conditionals/Habits)': grammarScores['Would (Conditionals/Habits)'] || 0,
+                'Past Perfect': grammarScores['Past Perfect'] || 0,
+                'Complex Modal Verbs': grammarScores['Complex Modal Verbs'] || 0,
+                'Reported Speech': grammarScores['Reported Speech'] || 0,
                 'Mixed Conditionals / Euphemisms': grammarScores['Mixed Conditionals / Euphemisms'] || 0,
             };
 
             let grammarLevel = 'Starter 1 (Pré-A1)'; // Default
 
-            // REGRAS DE TRANSIÇÃO (PROFICIÊNCIA MÍNIMA)
+            // REGRAS DE TRANSIÇÃO (AJUSTADAS PARA OS 14 TÓPICOS)
             
             // 1. STARTER 2 (A1)
-            // Domínio: Verb to Be (>= 2). Conhecimento: Simple Present/Future e Present Continuous (ambos >= 1)
-            if (scores['Verb To Be'] >= 2 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 1 && scores['Present Continuous'] >= 1) {
+            // Domínio: Verb to Be (>= 2). Conhecimento: Simple Present (>= 1), Future Tenses (>= 1), Present Continuous (>= 1)
+            if (scores['Verb To Be'] >= 2 && scores['Simple Present'] >= 1 && scores['Future Tenses (Will/Going To)'] >= 1 && scores['Present Continuous'] >= 1) {
                 grammarLevel = 'Starter 2 (A1)';
             }
             
-            // 2. FRESHMAN 2 (A2+) - Domínio dos Presentes/Futuro
-            // Domínio: Verb to Be (>= 3). Conhecimento: Simple Present/Future (>= 2) e Past Tenses (>= 1, pois começa aqui)
-            if (scores['Verb To Be'] >= 3 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 2 && scores['Present Continuous'] >= 2 && scores['Simple Past / Past Continuous'] >= 1) {
+            // 2. FRESHMAN 2 (A2+) - Domínio dos Presentes/Futuro e introdução do Passado
+            // Domínio: Verb to Be (>= 3). Conhecimento: Simple Present (>= 2), Future Tenses (>= 2), Present Continuous (>= 2), Simple Past (>= 1)
+            if (scores['Verb To Be'] >= 3 && scores['Simple Present'] >= 2 && scores['Future Tenses (Will/Going To)'] >= 2 && scores['Present Continuous'] >= 2 && scores['Simple Past'] >= 1) {
                  grammarLevel = 'Freshman 2 (A2+)';
             }
             
-            // 3. SOPHOMORE 1 (B1) - DOMÍNIO DE PASSADO SIMPLES (Essencial)
-            // Domínio: Passado (>= 3). E Superlatives (>= 1)
-            if (scores['Verb To Be'] >= 3 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 2 && scores['Simple Past / Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] >= 1) {
+            // 3. SOPHOMORE 1 (B1) - DOMÍNIO DE PASSADO SIMPLES e CONTINUOUS
+            // Domínio: Simple Past (>= 3), Past Continuous (>= 3). Conhecimento: Superlatives (>= 1)
+            if (scores['Simple Past'] >= 3 && scores['Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] >= 1) {
                 grammarLevel = 'Sophomore 1 (B1)'; 
             }
             
             // 4. SOPHOMORE 2 (B1+) - Domínio de Passado, Comparativos/Superlativos e Present Perfect (Novo)
-            // Domínio: Passado (>= 3), Comparatives (>= 2). Conhecimento: Present Perfect (>= 1, pois começa aqui)
-            if (scores['Simple Past / Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] >= 2 && scores['Present Perfect'] >= 1) {
+            // Domínio: Simple Past (>= 3), Past Continuous (>= 3), Superlatives (>= 2). Conhecimento: Present Perfect (>= 1)
+            if (scores['Simple Past'] >= 3 && scores['Past Continuous'] >= 3 && scores['Superlatives & Comparatives'] >= 2 && scores['Present Perfect'] >= 1) {
                 grammarLevel = 'Sophomore 2 (B1+)';
             }
 
-            // 5. JUNIOR 1 (B1+/B2 low) - Domínio Present Perfect e Conditionals (Novo)
-            // Domínio: Present Perfect (>= 2). Conhecimento: Conditionals (>= 1, pois aprende aqui)
+            // 5. JUNIOR 1 (B1+/B2 low) - Domínio Present Perfect e Conditionals (Zero/First/Second)
+            // Domínio: Present Perfect (>= 2). Conhecimento: Conditionals (Zero, First, Second) (>= 1)
             if (scores['Present Perfect'] >= 2 && scores['Conditionals (Zero, First, Second)'] >= 1) {
                 grammarLevel = 'Junior 1 (B1+/B2 low)';
             }
 
-            // 6. JUNIOR 2 (B2 low) - Domínio Condicionais e Past Perfect (Novo)
-            // Domínio: Conditionals (>= 2). Conhecimento: Would/Past Perfect (>= 1, pois aprende aqui)
-            if (scores['Conditionals (Zero, First, Second)'] >= 2 && scores['Would / Past Perfect'] >= 1) {
+            // 6. JUNIOR 2 (B2 low) - Domínio Condicionais e introdução Would/Past Perfect
+            // Domínio: Conditionals (Zero, First, Second) (>= 2). Conhecimento: Would (>= 1), Past Perfect (>= 1)
+            if (scores['Conditionals (Zero, First, Second)'] >= 2 && scores['Would (Conditionals/Habits)'] >= 1 && scores['Past Perfect'] >= 1) {
                 grammarLevel = 'Junior 2 (B2 low)';
             }
 
             // 7. SENIOR 1/2 (B2) - Lapidação e Estruturas Complexas
-            // Requer: Nível de domínio alto (média >= 2.5) nos tópicos principais e Advanced Structures >= 2
+            // Major Topics (5 Foundations): Verb To Be, Simple Present, Simple Past, Present Perfect, Conditionals (Zero, First, Second).
             const majorTopicsScored = [
                 scores['Verb To Be'], 
-                scores['Simple Present / Future Tenses (Will, Going To)'], 
-                scores['Simple Past / Past Continuous'], 
+                scores['Simple Present'], 
+                scores['Simple Past'], 
                 scores['Present Perfect'], 
                 scores['Conditionals (Zero, First, Second)']
             ];
             const sumMajorScores = majorTopicsScored.reduce((a, b) => a + b, 0);
-            const avgMajorScore = sumMajorScores / majorTopicsScored.length; // Média de 5 tópicos (Max 3)
+            const avgMajorScore = sumMajorScores / majorTopicsScored.length;
 
-            // Se a média nos tópicos fundamentais for >= 2.5 (muito bom) E conhece Advanced Structures:
-            if (avgMajorScore >= 2.5 && scores['Modal Verbs (Complex) / Reported Speech'] >= 2) {
+            // Se a média nos tópicos fundamentais for >= 2.5 (muito bom) E conhece Modals Complexos e Reported Speech (>= 2)
+            if (avgMajorScore >= 2.5 && scores['Complex Modal Verbs'] >= 2 && scores['Reported Speech'] >= 2) {
                 grammarLevel = 'Senior 1 / Senior 2 (Advanced)'; 
             }
             
             // TRATAMENTO DE SUB-NÍVEIS (Para refinar o resultado, se necessário)
             
-            // Starter 2 -> Freshman 1: Se já domina Verb To Be (3) e Presentes (2)
-            if (grammarLevel === 'Starter 2 (A1)' && scores['Verb To Be'] === 3 && scores['Simple Present / Future Tenses (Will, Going To)'] >= 2) {
+            // Starter 2 -> Freshman 1: Se já domina Verb To Be (3) e Presentes (2), mas ainda falta base de passado.
+            if (grammarLevel === 'Starter 2 (A1)' && scores['Verb To Be'] === 3 && scores['Simple Present'] >= 2) {
                  grammarLevel = 'Freshman 1 (A2) - (Needs practice on Simple Tenses)';
             } 
             // Sophomore 1 -> Freshman 2: Se domina Passado (3), mas não Comparatives/Superlatives (<= 1)
@@ -885,7 +944,7 @@
             }
 
 
-            const maxGrammarScore = grammarTopics.length * 3; // 10 tópicos * 3 pontos = 30
+            const maxGrammarScore = grammarTopics.length * 3; // 14 tópicos * 3 pontos = 42
             const totalGrammarScore = Object.values(scores).reduce((a, b) => a + b, 0);
             const averageScore = totalGrammarScore / grammarTopics.length; 
 
@@ -971,7 +1030,10 @@
             const resultData = calculateLevel(quickFinish);
             
             hideAllViews();
+            lightContentWrapper.classList.remove('hidden'); // Mostra o wrapper central
             resultView.classList.remove('hidden');
+            quizView.classList.add('hidden');
+            grammarGridView.classList.add('hidden');
 
             const timeDisplay = formatTime(totalTimeElapsed);
             document.getElementById('result-time').textContent = `Total Assessment Time: ${timeDisplay}`;
