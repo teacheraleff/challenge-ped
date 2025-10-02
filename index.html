@@ -19,8 +19,7 @@
         /* Aplicando a fonte padrão e cores do Hub Pedagógico */
         html, body {
             height: 100%;
-            /* CORREÇÃO: Remove barra de rolagem indesejada */
-            overflow: hidden;
+            overflow: hidden; /* Mantém a barra de rolagem principal oculta */
         }
         body {
             font-family: 'DM Sans', sans-serif;
@@ -29,17 +28,16 @@
         }
         #app-container {
             flex: 1 0 auto;
-            /* Garante que o container ocupe toda a altura visível */
             height: 100vh;
             overflow: hidden; 
         }
         main {
             flex-shrink: 0;
-            height: 100%; /* Garante que o main ocupe toda a altura */
+            height: 100%; 
             overflow: hidden;
         }
         
-        /* Estilos específicos para Ecrãs de Apresentação Escuros */
+        /* Estilos específicos para Ecrãs de Apresentação Escuros (Splash Screens) */
         .dark-splash {
             background-color: #1c1917; /* stone-900 */
             color: #f5f5f4; /* stone-100 */
@@ -47,36 +45,44 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* CORREÇÃO: Usa 100% da altura da viewport */
-            height: 100vh; 
+            /* NOVO: Usa max-height para caber no ecrã e um max-width razoável */
+            max-height: 90vh; 
+            max-width: 42rem; 
+            height: 100%; /* Ocupa a altura máxima permitida pelo max-height */
+            width: 100%;
             text-align: center;
             padding: 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            /* NOVO: max-w-7xl para desktop */
-            max-width: 42rem; /* Default/sm/md */
         }
-        /* Ajusta o max-width para desktop (lg) */
-        @media (min-width: 1024px) {
-            .full-width-desktop {
-                max-width: 80rem; /* max-w-7xl */
-            }
+        
+        /* Estilos para a caixa principal do Quiz/Grammar/Result */
+        .quiz-container-wrapper {
+            /* NOVO: Define a largura e altura MÁXIMAS para caber no ecrã (90% VH) */
+            max-height: 90vh; 
+            width: 100%;
+            max-width: 1280px; /* Limite prático de largura no desktop */
         }
 
-        /* Estilo para as caixas de conteúdo para forçar o scroll interno, se necessário */
-        .content-box {
-            /* Calcula a altura máxima dinamicamente, subtraindo padding/margin/header */
-            max-height: calc(100vh - 8rem); /* 100vh - (paddings + margins) */
+        /* Estilo para a caixa principal do Quiz/Grammar/Result */
+        .quiz-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e7e5e4;
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Ocupa 100% da altura do wrapper (90vh) */
+        }
+
+        /* Aplica scroll interno ao conteúdo que pode transbordar */
+        .scrollable-content {
+            flex-grow: 1; /* Permite que o conteúdo cresça */
             overflow-y: auto;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+            -webkit-overflow-scrolling: touch; 
+            padding-bottom: 1rem; /* Espaço para o rodapé */
         }
-        /* A cor de fundo principal da splash screen é o mesmo usado no .dark-splash */
-        .dark-splash.content-box {
-            background-color: #1c1917;
-            padding: 2rem;
-        }
-
         
         /* Estilos do Botão de Ação */
         .action-button {
@@ -275,98 +281,132 @@
 <body class="bg-stone-200 text-stone-800">
 
     <main id="app-container" class="flex items-center justify-center p-4 sm:p-6">
-        <!-- Aumenta a largura máxima para lg:max-w-7xl (80rem) -->
-        <div class="w-full max-w-3xl mx-auto lg:max-w-7xl content-box">
-        
-            <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
-            <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none lg:max-w-7xl content-box">
-                <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749349751/DBB440C2-684E-4DCF-9CD3-B2DDC18F1E53_3_vgocga.jpg" alt="SLAP Logo" class="w-32 h-auto mx-auto mb-6 sm:mb-8 rounded-lg">
-                <h1 class="text-4xl sm:text-5xl font-bold text-[#F1D24B] mb-6 sm:mb-8">
-                    Placement Test Guide
-                </h1>
-                <p class="text-lg text-stone-400 mb-4">Acesso Exclusivo para Professores.</p>
-                
-                <div class="w-full max-w-sm">
-                    <input type="password" id="password-input" class="input-field mb-4" placeholder="Enter Secret Password" required>
-                    <!-- O botão já está com display: inline-flex e justify-content: center no CSS para centralizar -->
-                    <button class="action-button bg-[#F1D24B] text-stone-900 text-xl px-12 py-4 w-full" onclick="checkPassword()">
-                        Acessar Guia
-                    </button>
-                    <p id="password-error" class="text-red-400 mt-3 hidden">Incorrect password. Please try again.</p>
-                </div>
-            </div>
-
-            <!-- SPLASH SCREEN 2: CONFIRMATION -->
-            <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none lg:max-w-7xl content-box">
-                 <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
-                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg">
-                    Teacher, o aluno está preparado para iniciar o teste?
-                </h2>
-                <button class="action-button bg-stone-100 text-stone-900 text-lg px-10 py-3" onclick="startQuiz()">
-                    Start Test!
-                </button>
-            </div>
-
-            <!-- Quiz View (NOVO LAYOUT DE AVALIAÇÃO ORAL) -->
-            <div id="quiz-view" class="hidden">
-                 <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
-                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto content-box">
-                    <!-- Quiz content will be injected here by JS -->
-                 </div>
-            </div>
+        <!-- O contentor principal agora usa flex para que o item interno ocupe 100% da altura e a largura máxima no desktop -->
+        <div class="w-full max-w-full mx-auto h-full flex flex-col justify-center items-center">
             
-            <!-- GRAMMAR GRID VIEW (NOVO LAYOUT DE CARTÕES/GRID) -->
-            <div id="grammar-grid-view" class="hidden">
-                <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-stone-300 w-full lg:max-w-7xl mx-auto content-box">
-                    <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
-                    <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
+            <!-- Wrapper que define o limite de tamanho -->
+            <div class="quiz-container-wrapper mx-auto">
+        
+                <!-- SPLASH SCREEN 1: PASSWORD LOGIN -->
+                <div id="splash-1-view" class="dark-splash mx-auto bg-stone-900 shadow-none">
+                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1749349751/DBB440C2-684E-4DCF-9CD3-B2DDC18F1E53_3_vgocga.jpg" alt="SLAP Logo" class="w-32 h-auto mx-auto mb-6 sm:mb-8 rounded-lg">
+                    <h1 class="text-4xl sm:text-5xl font-bold text-[#F1D24B] mb-6 sm:mb-8">
+                        Placement Test Guide
+                    </h1>
+                    <p class="text-lg text-stone-400 mb-4">Acesso Exclusivo para Professores.</p>
                     
-                    <!-- NOVO CONTAINER COM GRID RESPONSIVO -->
-                    <div id="grammar-cards-container" class="grammar-grid-container">
-                        <!-- Grammar topics will be injected here by JS -->
-                    </div>
-                    
-                    <div id="grammar-grid-result" class="hidden my-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-[#F1D24B]">
-                        <p class="font-bold text-stone-800">Grammar Grid Result: <span id="grammar-level" class="text-xl font-extrabold text-[#1c1917]"></span></p>
-                        <p id="grammar-score" class="text-sm text-stone-600"></p>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8 w-full">
-                        <button onclick="goToResultView()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2">Back to Test Result</button>
-                        <button id="submit-grammar-grid" onclick="submitGrammarGrid()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2" disabled>
-                            Submit & Calculate Grammar Level
+                    <div class="w-full max-w-sm">
+                        <input type="password" id="password-input" class="input-field mb-4" placeholder="Enter Secret Password" required>
+                        <!-- O botão já está com display: inline-flex e justify-content: center no CSS para centralizar -->
+                        <button class="action-button bg-[#F1D24B] text-stone-900 text-xl px-12 py-4 w-full" onclick="checkPassword()">
+                            Acessar Guia
                         </button>
+                        <p id="password-error" class="text-red-400 mt-3 hidden">Incorrect password. Please try again.</p>
                     </div>
                 </div>
-            </div>
 
+                <!-- SPLASH SCREEN 2: CONFIRMATION -->
+                <div id="splash-2-view" class="dark-splash mx-auto bg-stone-900 hidden shadow-none">
+                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294959/SLAP_TIPO_BRANCO_uvynbr.png" alt="SLAP Logo Branco" class="w-32 h-auto mx-auto mb-4 sm:mb-6 opacity-80">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 max-w-lg">
+                        Teacher, o aluno está preparado para iniciar o teste?
+                    </h2>
+                    <button class="action-button bg-stone-100 text-stone-900 text-lg px-10 py-3" onclick="startQuiz()">
+                        Start Test!
+                    </button>
+                </div>
 
-            <!-- RESULTADO FINAL -->
-            <div id="result-view" class="hidden">
-                <!-- Aplicado lg:max-w-7xl aqui para telas grandes -->
-                <div class="bg-white p-8 rounded-xl shadow-2xl border border-stone-300 text-center w-full lg:max-w-7xl mx-auto content-box">
-                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6">
-                    <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
-                    <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
-                    <p id="result-score" class="text-xl text-stone-600 mb-4 font-semibold"></p>
-                    
-                    <div class="my-6 p-6 bg-[#F1D24B] rounded-lg">
-                        <p class="text-2xl font-bold text-stone-900 mb-2">Estimated Level (Oral Test)</p>
-                        <p id="result-level" class="text-5xl font-extrabold text-stone-900 mb-2"></p>
+                <!-- Quiz View (NOVO LAYOUT DE AVALIAÇÃO ORAL) -->
+                <div id="quiz-view" class="hidden h-full flex flex-col">
+                    <div class="quiz-card w-full p-0 flex flex-col overflow-hidden">
+                        <div class="p-6 sm:p-8 flex-shrink-0">
+                            <div class="flex justify-between items-center mb-4">
+                                <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-24 h-auto">
+                                <div class="text-3xl font-bold text-stone-800 p-2 border-2 border-stone-800 rounded-lg">
+                                    <span id="timer-display">00:00</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                                <div class="w-full sm:w-auto mb-3 sm:mb-0">
+                                    <p class="text-sm font-semibold text-stone-500 mb-1">Question 1 of 42</p>
+                                    <div class="progress-bar-background">
+                                        <div class="progress-bar-foreground" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                                <!-- Centralização do Nível Foco em Mobile/Desktop -->
+                                <div class="text-center w-full sm:w-auto ml-0 sm:ml-4 p-2 bg-yellow-50 rounded-lg"> 
+                                    <p class="text-sm font-semibold text-stone-500">Nível Foco</p>
+                                    <span class="text-xl font-bold text-stone-900">Starter 1 (Pré-A1)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="quiz-content-area" class="p-6 sm:p-8 pt-0 scrollable-content flex flex-col flex-grow">
+                            <!-- Conteúdo do quiz será injetado aqui pelo JS, incluindo prompt e criteria -->
+                        </div>
+
+                        <div id="quiz-nav-placeholder" class="p-6 sm:p-8 pt-0 flex-shrink-0">
+                            <!-- Botões de navegação serão injetados aqui pelo JS -->
+                        </div>
                     </div>
-                    
-                    <p id="result-message" class="text-stone-700 max-w-md mx-auto"></p>
+                </div>
+                
+                <!-- GRAMMAR GRID VIEW (NOVO LAYOUT DE CARTÕES/GRID) -->
+                <div id="grammar-grid-view" class="hidden h-full flex flex-col">
+                    <div class="quiz-card w-full p-0 flex flex-col overflow-hidden">
+                        <div class="p-6 sm:p-8 flex-shrink-0">
+                            <h2 class="text-3xl font-bold text-stone-800 mb-4">Grammar Grid Evaluation</h2>
+                            <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
+                        </div>
+                        
+                        <div id="grammar-cards-container" class="grammar-grid-container p-6 sm:p-8 pt-0 scrollable-content">
+                            <!-- Grammar topics will be injected here by JS -->
+                        </div>
+                        
+                        <div class="p-6 sm:p-8 pt-0 flex-shrink-0 border-t border-stone-200">
+                            <div id="grammar-grid-result" class="hidden my-4 p-4 bg-yellow-50 rounded-lg border-l-4 border-[#F1D24B]">
+                                <p class="font-bold text-stone-800">Grammar Grid Result: <span id="grammar-level" class="text-xl font-extrabold text-[#1c1917]"></span></p>
+                                <p id="grammar-score" class="text-sm text-stone-600"></p>
+                            </div>
 
-                    <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                         <button onclick="restartQuiz()" class="action-button text-lg px-8 py-3 bg-stone-800 text-white hover:bg-stone-900">
-                             Restart Test
-                         </button>
-                         <button onclick="goToGrammarGrid()" class="action-button text-lg px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700">
-                             Grammar Grid
-                         </button>
+                            <div class="flex flex-col sm:flex-row justify-end gap-3 w-full">
+                                <button onclick="goToResultView()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2">Back to Test Result</button>
+                                <button id="submit-grammar-grid" onclick="submitGrammarGrid()" class="action-button bg-stone-800 text-white hover:bg-stone-900 w-full sm:w-1/2" disabled>
+                                    Submit & Calculate Grammar Level
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
+
+                <!-- RESULTADO FINAL -->
+                <div id="result-view" class="hidden h-full flex flex-col">
+                    <div class="quiz-card w-full mx-auto p-8 text-center flex flex-col overflow-hidden">
+                        <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-32 h-auto mx-auto mb-6 flex-shrink-0">
+                        <div class="scrollable-content pt-0 flex flex-col justify-center">
+                            <h2 class="text-3xl font-bold mb-4 text-stone-800">Assessment Finished!</h2>
+                            <p id="result-time" class="text-xl text-stone-600 mb-2 font-semibold"></p>
+                            <p id="result-score" class="text-xl text-stone-600 mb-4 font-semibold"></p>
+                            
+                            <div class="my-6 p-6 bg-[#F1D24B] rounded-lg">
+                                <p class="text-2xl font-bold text-stone-900 mb-2">Estimated Level (Oral Test)</p>
+                                <p id="result-level" class="text-5xl font-extrabold text-stone-900 mb-2"></p>
+                            </div>
+                            
+                            <p id="result-message" class="text-stone-700 max-w-md mx-auto"></p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 flex-shrink-0">
+                            <button onclick="restartQuiz()" class="action-button text-lg px-8 py-3 bg-stone-800 text-white hover:bg-stone-900">
+                                Restart Test
+                            </button>
+                            <button onclick="goToGrammarGrid()" class="action-button text-lg px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700">
+                                Grammar Grid
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -685,7 +725,11 @@
 
 
         function displayQuestion() {
-            const quizContainer = quizView.querySelector('.bg-white');
+            const quizCard = quizView.querySelector('.quiz-card');
+            const quizContentArea = document.getElementById('quiz-content-area');
+            const quizNavPlaceholder = document.getElementById('quiz-nav-placeholder');
+
+
             if (currentQuestionIndex >= studentScores.length) {
                 // If the end of the quiz is reached (passed the last ACC prompt), show the result
                 showResult();
@@ -749,57 +793,66 @@
                 </button>
             `;
 
-
-            quizContainer.innerHTML = `
-                <div id="quiz-content">
-                     <div class="flex justify-between items-center mb-6">
-                        <img src="${quizLogoUrl}" alt="SLAP Logo Preto" class="w-24 h-auto">
-                        <div class="text-3xl font-bold text-stone-800 p-2 border-2 border-stone-800 rounded-lg">
-                            <span id="timer-display">00:00</span>
-                        </div>
-                     </div>
-                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                        <div class="w-full sm:w-auto mb-3 sm:mb-0">
-                            <p class="text-sm font-semibold text-stone-500 mb-1">Question ${currentQuestionIndex + 1} of ${totalQuestions}</p>
-                            <div class="progress-bar-background">
-                                <div class="progress-bar-foreground" style="width: ${progressPercentage}%;"></div>
+            // Update Header (already in place)
+            const headerContent = quizCard.querySelector('.flex-shrink-0');
+            if (headerContent) {
+                 headerContent.innerHTML = `
+                        <div class="flex justify-between items-center mb-4">
+                            <img src="${quizLogoUrl}" alt="SLAP Logo Preto" class="w-24 h-auto">
+                            <div class="text-3xl font-bold text-stone-800 p-2 border-2 border-stone-800 rounded-lg">
+                                <span id="timer-display">00:00</span>
                             </div>
                         </div>
-                        <!-- Centralização do Nível Foco em Mobile/Desktop -->
-                        <div class="text-center w-full sm:w-auto ml-0 sm:ml-4 p-2 bg-yellow-50 rounded-lg"> 
-                            <p class="text-sm font-semibold text-stone-500">Nível Foco</p>
-                            <span class="text-xl font-bold text-stone-900">${questionData.level}</span>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div class="w-full sm:w-auto mb-3 sm:mb-0">
+                                <p class="text-sm font-semibold text-stone-500 mb-1">Question ${currentQuestionIndex + 1} of ${totalQuestions}</p>
+                                <div class="progress-bar-background">
+                                    <div class="progress-bar-foreground" style="width: ${progressPercentage}%;"></div>
+                                </div>
+                            </div>
+                            <!-- Centralização do Nível Foco em Mobile/Desktop -->
+                            <div class="text-center w-full sm:w-auto ml-0 sm:ml-4 p-2 bg-yellow-50 rounded-lg"> 
+                                <p class="text-sm font-semibold text-stone-500">Nível Foco</p>
+                                <span class="text-xl font-bold text-stone-900">${questionData.level}</span>
+                            </div>
                         </div>
-                     </div>
-                    
-                    <!-- Prompt for the Teacher (text in Portuguese as requested) -->
-                    <div class="p-6 bg-indigo-50 rounded-xl mb-6">
-                        <p class="text-sm font-semibold text-indigo-600 mb-2">PROMPT ORAL (Professor pergunta):</p>
-                        <h3 class="text-xl sm:text-2xl font-bold text-indigo-800">${questionData.prompt}</h3>
-                    </div>
-                    
-                    ${scoringSection}
+                 `;
+            }
 
-                    <div id="quiz-nav" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div class="flex flex-col gap-2 w-full sm:w-auto">
-                            ${stopTestButton}
-                            ${nextLevelButton}
-                            <button class="action-button bg-stone-500 text-white hover:bg-stone-600 text-sm px-4 py-2 w-full" onclick="skipQuestion()">
-                                Skip Question (No Score)
-                            </button>
-                        </div>
-                        
-                        <button class="action-button text-lg px-8 py-3 w-full sm:w-auto" onclick="${nextFunction}" ${nextButtonDisabled}>
-                            ${buttonText} 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            // Update Scrollable Content Area
+            quizContentArea.innerHTML = `
+                <!-- Prompt for the Teacher (text in Portuguese as requested) -->
+                <div class="p-6 bg-indigo-50 rounded-xl mb-6">
+                    <p class="text-sm font-semibold text-indigo-600 mb-2">PROMPT ORAL (Professor pergunta):</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-indigo-800">${questionData.prompt}</h3>
+                </div>
+                
+                ${scoringSection}
+            `;
+
+            // Update Navigation Area
+            quizNavPlaceholder.innerHTML = `
+                 <div id="quiz-nav" class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex flex-col gap-2 w-full sm:w-auto">
+                        ${stopTestButton}
+                        ${nextLevelButton}
+                        <button class="action-button bg-stone-500 text-white hover:bg-stone-600 text-sm px-4 py-2 w-full" onclick="skipQuestion()">
+                            Skip Question (No Score)
                         </button>
                     </div>
-                </div>`;
+                    
+                    <button class="action-button text-lg px-8 py-3 w-full sm:w-auto" onclick="${nextFunction}" ${nextButtonDisabled}>
+                        ${buttonText} 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            `;
             
             // Update progress bar after HTML injection
-            setTimeout(() => {
-                quizContainer.querySelector('.progress-bar-foreground').style.width = `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
-            }, 100);
+            const progressContainer = headerContent.querySelector('.progress-bar-foreground');
+            if (progressContainer) {
+                 progressContainer.style.width = `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
+            }
             
             updateTimerDisplay();
         }
@@ -810,13 +863,15 @@
             questionData.scores[overallScoreKey] = scoreValue;
             
             const criteriaDiv = document.getElementById('overall-criteria');
-            criteriaDiv.querySelectorAll('.score-button').forEach(button => {
-                button.classList.remove('selected');
-            });
+            if (criteriaDiv) {
+                criteriaDiv.querySelectorAll('.score-button').forEach(button => {
+                    button.classList.remove('selected');
+                });
+            }
             clickedButton.classList.add('selected');
             
             const allScored = questionData.scores[overallScoreKey] !== null;
-            const nextButton = document.querySelector('#quiz-nav .action-button:not(.stop-test-button):not(.bg-indigo-600):not(.bg-stone-500)'); 
+            const nextButton = document.querySelector('#quiz-nav-placeholder .action-button:not(.stop-test-button):not(.bg-indigo-600):not(.bg-stone-500)'); 
             if (nextButton) {
                 nextButton.disabled = !allScored;
             }
