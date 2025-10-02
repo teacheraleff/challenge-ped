@@ -329,10 +329,10 @@
             
             <!-- GRAMMAR GRID VIEW (LIGHT BACKGROUND) -->
             <div id="grammar-grid-view" class="hidden w-full p-6 sm:p-8">
-                <!-- NOVO: Logo e Título alinhados -->
-                <div class="flex items-center gap-4 mb-6">
-                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-24 h-auto">
-                    <h2 class="text-3xl font-bold text-stone-800">Grammar Grid Evaluation</h2>
+                <!-- MUDANÇA: Logo acima do título e título simplificado -->
+                <div class="mb-6">
+                    <img src="https://res.cloudinary.com/dqfi22uz0/image/upload/v1759294967/SLAP_TIPO_PRETO_2_kismg9.png" alt="SLAP Logo Preto" class="w-24 h-auto mx-auto mb-4">
+                    <h2 class="text-3xl font-bold text-stone-800 text-center">Grammar Grid</h2>
                 </div>
                 <p class="text-stone-600 mb-6">Use this grid to evaluate the student's mastery of key grammar points. Select Strong, Medium, or Weak for each topic based on your observation during the oral test.</p>
                 
@@ -364,7 +364,8 @@
                 
                 <div class="my-6 highlight-box-yellow">
                     <p class="text-2xl font-bold text-stone-900 mb-2">Estimated Level (Oral Test)</p>
-                    <p id="result-level" class="text-5xl font-extrabold text-stone-900 mb-2"></p>
+                    <!-- MUDANÇA: Reduzindo o tamanho da fonte do nível no mobile (apenas text-4xl) -->
+                    <p id="result-level" class="text-4xl sm:text-5xl font-extrabold text-stone-900 mb-2"></p>
                 </div>
                 
                 <p id="result-message" class="text-stone-700 max-w-md mx-auto"></p>
@@ -990,7 +991,7 @@
             }
             
             // 2. FRESHMAN 2 (A2+) - Domínio dos Presentes/Futuro e introdução do Passado
-            // Domínio: Verb to Be (>= 3). Conhecimento: Simple Present (>= 2), Future Tenses (>= 2), Present Continuous (>= 2), Simple Past (>= 1)
+            // Domínio: Verb To Be (>= 3). Conhecimento: Simple Present (>= 2), Future Tenses (>= 2), Present Continuous (>= 2), Simple Past (>= 1)
             if (scores['Verb To Be'] >= 3 && scores['Simple Present'] >= 2 && scores['Future Tenses (Will/Going To)'] >= 2 && scores['Present Continuous'] >= 2 && scores['Simple Past'] >= 1) {
                  grammarLevel = 'Freshman 2 (A2+)';
             }
